@@ -1,24 +1,31 @@
 ﻿@page "/contact"
 <PageTitle>Contact Us</PageTitle>
-<h3>Contact Us</h3>
+
+<h3 style="text-align:center">Contact Us</h3>
+<hr/>
+<br/>
+
 <!--NEED TO UPDATE TO A FORM TO COLLECT USER INFO-->
-<div>
-    <table class="table-bordered">
-        <tr>
-            <td>
-                email:
-            </td>
-            <td>
-                nicholas.turco@hotmail.com
-            </td>
-        </tr>
-        <tr>
-            <td>
-                phone:
-            </td>
-            <td>
-                555-555-5555
-            </td>
-        </tr>
-    </table>
+<div class="container">
+<form>
+        <div class="row g-2 w-50">
+        <div class="col-sm pt-1">
+            <input type="text" class="form-control" placeholder="First Name" aria-label="First Name"/>
+        </div>
+        <div class="col-sm pt-1">
+            <input type="text" class="form-control" placeholder="Last Name" aria-label="Last Name" />
+        </div>
+    </div>
+        <div class="row g-1 pt-1 w-50">
+        <div>
+            <input type="text" class="form-control" placeholder="Email Address" aria-label="Email Address" />
+        </div>
+    </div>
+    <div class="row g-1 pt-1 w-75">
+            <div>
+                <textarea class="form-control" rows="5" style="resize:none;" placeholder="Enter message here" aria-label="Message">
+                </textarea>    
+        </div>
+    </div>
+</form>
 </div>
