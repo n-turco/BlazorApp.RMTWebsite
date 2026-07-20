@@ -1,31 +1,58 @@
 ﻿@page "/contact"
+@using Models
+
 <PageTitle>Contact Us</PageTitle>
 
 <h3 style="text-align:center">Contact Us</h3>
-<hr/>
-<br/>
+<hr />
+<br />
 
-<!--NEED TO UPDATE TO A FORM TO COLLECT USER INFO-->
-<div class="container">
-<form>
-        <div class="row g-2 w-50">
-        <div class="col-sm pt-1">
-            <input type="text" class="form-control" placeholder="First Name" aria-label="First Name"/>
+<div class="container w-75">
+    <!--NEED TO UPDATE TO A FORM TO COLLECT USER INFO-->
+    <EditForm Model="inquiry" OnValidSubmit="Submit">
+        <DataAnnotationsValidator />
+
+        <div class="mt-1 w-25 form-floating">
+            <label for="firstName"/>
+            <InputText id="firstName" class="form-control" @bind-Value="inquiry.FirstName" placeholder="First Name"/>
+            <ValidationMessage For="@(() => inquiry.FirstName)" />
         </div>
-        <div class="col-sm pt-1">
-            <input type="text" class="form-control" placeholder="Last Name" aria-label="Last Name" />
+
+        <div class="mt-1 w-25 form-floating">
+            <label for="lastName"/>
+            <InputText id="lastName" class="form-control" @bind-Value="inquiry.LastName" placeholder="Last Name" />
+            <ValidationMessage For="@(() => inquiry.LastName)" />
         </div>
-    </div>
-        <div class="row g-1 pt-1 w-50">
-        <div>
-            <input type="text" class="form-control" placeholder="Email Address" aria-label="Email Address" />
+
+        <div class="mt-1 w-25 form-floating">
+            <label for="emailAddress"/>
+            <InputText id="emailAddress" class="form-control" @bind-Value="inquiry.EmailAddress" placeholder="Email Address" />
+            <ValidationMessage For="@(() => inquiry.EmailAddress)" />
         </div>
-    </div>
-    <div class="row g-1 pt-1 w-75">
-            <div>
-                <textarea class="form-control" rows="5" style="resize:none;" placeholder="Enter message here" aria-label="Message">
-                </textarea>    
+
+        <div class="mt-1 w-25 form-floating">
+            <label for="emailSubject" />
+            <InputText id="emailSubject" class="form-control" @bind-Value="inquiry.EmailSubject" placeholder="Subject Title" />
+            <ValidationMessage For="@(() => inquiry.EmailSubject)" />
         </div>
-    </div>
-</form>
+
+        <div class="mt-1 w-75">
+            <label for="emailContent" />
+            <InputTextArea id="emailContent" class="form-control" @bind-Value="inquiry.EmailContent" rows="5" placeholder="Enter Message Here"/>
+            <ValidationMessage For="@(() => inquiry.EmailContent)" />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-1" style="border-radius:10px">Submit</button>
+    </EditForm>
+
 </div>
+
+@code {
+
+    EmailInquiry inquiry = new();
+
+    private void Submit()
+    {
+
+    }
+}
