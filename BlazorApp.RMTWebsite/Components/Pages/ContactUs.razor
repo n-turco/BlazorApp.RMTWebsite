@@ -9,35 +9,36 @@
 
 <div class="container w-75">
     <!--NEED TO UPDATE TO A FORM TO COLLECT USER INFO-->
-    <EditForm Model="inquiry" OnValidSubmit="Submit">
+    <EditForm Model="inquiry" OnValidSubmit="Submit" FormName="inquiryForm">
         <DataAnnotationsValidator />
 
+        <label for="firstName">First Name</label>
         <div class="mt-1 w-25 form-floating">
-            <label for="firstName"/>
-            <InputText id="firstName" class="form-control" @bind-Value="inquiry.FirstName" placeholder="First Name"/>
+            
+            <InputText id="firstName" class="form-control" @bind-Value="inquiry.FirstName" placeholder="John"/>
             <ValidationMessage For="@(() => inquiry.FirstName)" />
         </div>
 
+        <label for="lastName">Last Name</label>
         <div class="mt-1 w-25 form-floating">
-            <label for="lastName"/>
-            <InputText id="lastName" class="form-control" @bind-Value="inquiry.LastName" placeholder="Last Name" />
+            <InputText id="lastName" class="form-control" @bind-Value="inquiry.LastName" placeholder="Smith" />
             <ValidationMessage For="@(() => inquiry.LastName)" />
         </div>
 
+        <label for="emailAddress">Email Address</label>
         <div class="mt-1 w-25 form-floating">
-            <label for="emailAddress"/>
-            <InputText id="emailAddress" class="form-control" @bind-Value="inquiry.EmailAddress" placeholder="Email Address" />
+            <InputText id="emailAddress" class="form-control" @bind-Value="inquiry.EmailAddress" placeholder="Example@email.com" />
             <ValidationMessage For="@(() => inquiry.EmailAddress)" />
         </div>
 
+        <label for="emailSubject">Subject Title</label>
         <div class="mt-1 w-25 form-floating">
-            <label for="emailSubject" />
-            <InputText id="emailSubject" class="form-control" @bind-Value="inquiry.EmailSubject" placeholder="Subject Title" />
+            <InputText id="emailSubject" class="form-control" @bind-Value="inquiry.EmailSubject" placeholder="Available Appointments" />
             <ValidationMessage For="@(() => inquiry.EmailSubject)" />
         </div>
 
+        <label for="emailContent">Message:</label>
         <div class="mt-1 w-75">
-            <label for="emailContent" />
             <InputTextArea id="emailContent" class="form-control" @bind-Value="inquiry.EmailContent" rows="5" placeholder="Enter Message Here"/>
             <ValidationMessage For="@(() => inquiry.EmailContent)" />
         </div>
@@ -49,6 +50,7 @@
 
 @code {
 
+    //email object to contain sender information
     EmailInquiry inquiry = new();
 
     private void Submit()
