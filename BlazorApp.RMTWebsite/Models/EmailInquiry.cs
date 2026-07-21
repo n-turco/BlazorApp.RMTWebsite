@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BlazorApp.RMTWebsite.Models
 {
-    public class EmailInquiry : IEmailSender
+    public class EmailInquiry
     {
         [Required(ErrorMessage = "Email Address is required.")]
         [EmailAddress(ErrorMessage = "Must be a valid email address.")]  
@@ -23,12 +23,5 @@ namespace BlazorApp.RMTWebsite.Models
         [StringLength(30, ErrorMessage = "Last name is too long.")]
         public string LastName { get; set; } = string.Empty;
 
-        // Implement the interface method
-        public Task SendEmailAsync(string email, string subject, string htmlMessage)
-        {
-            // Minimal implementation to satisfy the interface.
-            // Replace with real sending logic as needed.
-            return Task.CompletedTask;
-        }
     }
 }
