@@ -1,4 +1,5 @@
 using BlazorApp.RMTWebsite.Components;
+using BlazorApp.RMTWebsite.Models;
 
 namespace BlazorApp.RMTWebsite
 {
@@ -10,6 +11,9 @@ namespace BlazorApp.RMTWebsite
 
             // Add services to the container.
             builder.Services.AddRazorComponents();
+
+            //bind Email Settings from appsettings to the EmailSettings class
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
             var app = builder.Build();
 

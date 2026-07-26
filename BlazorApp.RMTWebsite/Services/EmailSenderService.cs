@@ -8,8 +8,11 @@ namespace BlazorApp.RMTWebsite.Services
 {
     public class EmailSenderService(IOptions<EmailSettings> settings) : IEmailSender
     {
-        private readonly EmailSettings? _settings = settings.Value; 
+        private readonly EmailSettings? _settings = settings.Value;
 
+        //configure client
+        //prepare email
+        //send email
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             if(_settings != null)

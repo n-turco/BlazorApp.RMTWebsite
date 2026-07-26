@@ -16,12 +16,10 @@ namespace BlazorApp.RMTWebsite.Models
         [Required(ErrorMessage = "Message is required.")]
         [StringLength(1000, ErrorMessage = "Message is too long, must be less than 1000 characters.")]
         public string EmailContent { get; set; } = string.Empty;
-        [Required(ErrorMessage = "First Name is required.")]
-        [StringLength(30, ErrorMessage = "First name is too long.")]
-        public string FirstName { get; set; } = string.Empty;
-        [Required(ErrorMessage = "Last Name is required.")]
-        [StringLength(30, ErrorMessage = "Last name is too long.")]
-        public string LastName { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Name is required.")]
+        [StringLength(30, ErrorMessage = "Name is too long.")]
+        public string Name { get; set; } = string.Empty;
+
 
     }
 }

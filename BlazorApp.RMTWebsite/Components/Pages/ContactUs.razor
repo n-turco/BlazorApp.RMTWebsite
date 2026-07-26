@@ -13,17 +13,11 @@
     <EditForm Model="inquiry" OnValidSubmit="ValidSubmit" FormName="inquiryForm">
         <DataAnnotationsValidator />
          
-        <label for="firstName"><h5>First Name</h5></label>
+        <label for="name"><h5>Name</h5></label>
         <div class="mt-1 w-25">
             <!--@bind-value binds the user input to the data model of the inquiry object-->
-            <InputText id="firstName" class="form-control" @bind-Value="inquiry.FirstName" placeholder="John"/>
-            <ValidationMessage For="@(() => inquiry.FirstName)" />
-        </div>
-
-        <label for="lastName"><h5>Last Name</h5></label>
-        <div class="mt-1 w-25">
-            <InputText id="lastName" class="form-control" @bind-Value="inquiry.LastName" placeholder="Smith" />
-            <ValidationMessage For="@(() => inquiry.LastName)" />
+            <InputText id="firstName" class="form-control" @bind-Value="inquiry.Name" placeholder="John Smith"/>
+            <ValidationMessage For="@(() => inquiry.Name)" />
         </div>
 
         <label for="emailAddress"><h5>Email Address</h5></label>
@@ -40,7 +34,7 @@
 
         <label for="emailContent"><h5>Message:</h5></label>
         <div class="mt-1 w-75">
-            <InputTextArea id="emailContent" class="form-control" @bind-Value="inquiry.EmailContent" rows="5" placeholder="Enter Message Here"/>
+            <InputTextArea id="emailContent" class="form-control" @bind-Value="inquiry.EmailContent" rows="5" placeholder="Enter Message Here" style="resize:none;"/>
             <ValidationMessage For="@(() => inquiry.EmailContent)" />
         </div>
 
