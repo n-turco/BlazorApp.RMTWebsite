@@ -1,5 +1,7 @@
 using BlazorApp.RMTWebsite.Components;
 using BlazorApp.RMTWebsite.Models;
+using BlazorApp.RMTWebsite.RMTServices;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace BlazorApp.RMTWebsite
 {
@@ -11,6 +13,9 @@ namespace BlazorApp.RMTWebsite
 
             // Add services to the container.
             builder.Services.AddRazorComponents();
+            builder.Services.AddHttpClient<EmailInquiry>();
+            builder.Services.AddScoped<IEmailSender, EmailSenderService>();
+            
 
             //bind Email Settings from appsettings to the EmailSettings class
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));

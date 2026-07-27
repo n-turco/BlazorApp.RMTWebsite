@@ -1,5 +1,7 @@
 ﻿@page "/contact"
 @using Models
+@inject IEmailSender emailSender
+
 
 
 <PageTitle>Contact Us</PageTitle>
@@ -13,12 +15,12 @@
     <EditForm Model="inquiry" OnValidSubmit="ValidSubmit" FormName="inquiryForm">
         <DataAnnotationsValidator />
          
-        <label for="name"><h5>Name</h5></label>
+        @* <label for="name"><h5>Name</h5></label>
         <div class="mt-1 w-25">
             <!--@bind-value binds the user input to the data model of the inquiry object-->
             <InputText id="firstName" class="form-control" @bind-Value="inquiry.Name" placeholder="John Smith"/>
             <ValidationMessage For="@(() => inquiry.Name)" />
-        </div>
+        </div> *@
 
         <label for="emailAddress"><h5>Email Address</h5></label>
         <div class="mt-1 w-25">
@@ -40,15 +42,49 @@
 
         <button type="submit" class="btn btn-primary mt-1" style="border-radius:10px">Submit</button>
     </EditForm>
-
+    <label>@infoLabel</label>
 </div>
 
+
 @code {
-    //email object to contain sender information
+    [SupplyParameterFromForm]
     private EmailInquiry inquiry { get; set; } = new();
+
+    private string infoLabel = string.Empty;
 
     private async Task ValidSubmit()
     {
-       //Fill out submit logic here
+        if(inquiry != null)
+        {
+            try
+            {
+                await emailSender.SendEmailAsync(inquiry.EmailAddress, inquiry.EmailSubject, inquiry.EmailContent);
+                infoLabel = "Message successfully sent.";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                infoLabel = "Something went wrong. Message failed to send.";
+            }
+            finally
+            {
+                //clear the form
+                inquiry = new();
+            }
+        }
     }
+}
+public class EmailInquiry
+{
+    [Required(ErrorMessage = "Email Address is required.")]
+    [EmailAddress(ErrorMessage = "Must be a valid email address.")]
+    public string EmailAddress { get; set; }
+
+    [Required(ErrorMessage = "Subject line is required.")]
+    [StringLength(30, ErrorMessage = "Subject line is too long.")]
+    public string EmailSubject { get; set; }
+
+    [Required(ErrorMessage = "Message is required.")]
+    [StringLength(1000, ErrorMessage = "Message is too long, must be less than 1000 characters.")]
+    public string EmailContent { get; set; }
 }
