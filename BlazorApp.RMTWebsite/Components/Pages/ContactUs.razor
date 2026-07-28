@@ -48,9 +48,11 @@
 
 @code {
     [SupplyParameterFromForm]
-    private EmailInquiry inquiry { get; set; } = new();
+    private EmailInquiry? inquiry { get; set; }
 
     private string infoLabel = string.Empty;
+
+    protected override void OnInitialized() => inquiry ??= new();
 
     private async Task ValidSubmit()
     {
@@ -60,31 +62,14 @@
             {
                 await emailSender.SendEmailAsync(inquiry.EmailAddress, inquiry.EmailSubject, inquiry.EmailContent);
                 infoLabel = "Message successfully sent.";
+                //clear the form
+                inquiry = new();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 infoLabel = "Something went wrong. Message failed to send.";
             }
-            finally
-            {
-                //clear the form
-                inquiry = new();
-            }
         }
     }
-}
-public class EmailInquiry
-{
-    [Required(ErrorMessage = "Email Address is required.")]
-    [EmailAddress(ErrorMessage = "Must be a valid email address.")]
-    public string EmailAddress { get; set; }
-
-    [Required(ErrorMessage = "Subject line is required.")]
-    [StringLength(30, ErrorMessage = "Subject line is too long.")]
-    public string EmailSubject { get; set; }
-
-    [Required(ErrorMessage = "Message is required.")]
-    [StringLength(1000, ErrorMessage = "Message is too long, must be less than 1000 characters.")]
-    public string EmailContent { get; set; }
 }
