@@ -1,6 +1,7 @@
 ﻿@page "/contact"
 @using Models
 @inject IEmailSender emailSender
+@* @rendermode InteractiveServer *@
 
 
 
@@ -12,15 +13,8 @@
 
 <div class="container w-75">
     <!--NEED TO UPDATE TO A FORM TO COLLECT USER INFO-->
-    <EditForm Model="inquiry" OnValidSubmit="ValidSubmit" FormName="inquiryForm">
+    <EditForm Model="inquiry" OnValidSubmit="ValidSubmit" FormName="inquiryForm" Enhance>
         <DataAnnotationsValidator />
-         
-        @* <label for="name"><h5>Name</h5></label>
-        <div class="mt-1 w-25">
-            <!--@bind-value binds the user input to the data model of the inquiry object-->
-            <InputText id="firstName" class="form-control" @bind-Value="inquiry.Name" placeholder="John Smith"/>
-            <ValidationMessage For="@(() => inquiry.Name)" />
-        </div> *@
 
         <label for="emailAddress"><h5>Email Address</h5></label>
         <div class="mt-1 w-25">
@@ -47,23 +41,26 @@
 
 
 @code {
+    [EditorRequired]
     [SupplyParameterFromForm]
-    private EmailInquiry? inquiry { get; set; }
+    private EmailInquiry inquiry { get; set; } = new EmailInquiry();
 
+    protected override void OnInitialized()
+    {
+        inquiry ??= new();
+    }
     private string infoLabel = string.Empty;
-
-    protected override void OnInitialized() => inquiry ??= new();
 
     private async Task ValidSubmit()
     {
-        if(inquiry != null)
+        if (inquiry != null)
         {
             try
             {
                 await emailSender.SendEmailAsync(inquiry.EmailAddress, inquiry.EmailSubject, inquiry.EmailContent);
                 infoLabel = "Message successfully sent.";
                 //clear the form
-                inquiry = new();
+                inquiry = new EmailInquiry();
             }
             catch (Exception ex)
             {

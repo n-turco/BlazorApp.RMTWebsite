@@ -9,6 +9,7 @@ namespace BlazorApp.RMTWebsite.Models
         [Required(ErrorMessage = "Email Address is required.")]
         [EmailAddress(ErrorMessage = "Must be a valid email address.")]  
         public string EmailAddress { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Subject line is required.")]
         [StringLength(30, ErrorMessage = "Subject line is too long.")]
         public string EmailSubject { get; set; } = string.Empty;
@@ -17,8 +18,5 @@ namespace BlazorApp.RMTWebsite.Models
         [StringLength(1000, ErrorMessage = "Message is too long, must be less than 1000 characters.")]
         public string EmailContent { get; set; } = string.Empty;
 
-        //[Required(ErrorMessage = "Name is required.")]
-        //[StringLength(30, ErrorMessage = "Name is too long.")]
-        //public string Name { get; set; } = string.Empty;
     }
 }

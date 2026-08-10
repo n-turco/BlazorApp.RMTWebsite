@@ -1,11 +1,6 @@
-﻿using BlazorApp.RMTWebsite.Models;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Extensions.Options;
-using System.Net.Http;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 
 namespace BlazorApp.RMTWebsite.RMTServices
@@ -33,7 +28,7 @@ namespace BlazorApp.RMTWebsite.RMTServices
             {
                 var content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
-                { "from", email },
+                { "from", "postmaster@sandbox29ee27561c3e452ea58e840ba561dcb8.mailgun.org" },
                 { "to", toEmail },
                 { "subject", subject },
                 { "text", htmlMessage }
@@ -41,24 +36,17 @@ namespace BlazorApp.RMTWebsite.RMTServices
                 request.Content = content;
             }
 
-            await _httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Mailgun Error: {response.StatusCode} - {responseBody}");
+                throw new InvalidOperationException($"Failed to send email: {responseBody}");
+            }
+
+            Console.WriteLine($"Mailgun Success: {responseBody}");
         }
-        //public static async Task<RestResponse> Send()
-        //{
-        //    var options = new RestClientOptions("https://api.mailgun.net")
-        //    {
-        //        Authenticator = new HttpBasicAuthenticator("api", Environment.GetEnvironmentVariable("API_KEY") ?? "API_KEY")
-        //    };
-
-        //    var client = new RestClient(options);
-        //    var request = new RestRequest("/v3/sandbox29ee27561c3e452ea58e840ba561dcb8.mailgun.org/messages", Method.Post);
-        //    request.AlwaysMultipartFormData = true;
-        //    request.AddParameter("from", "Mailgun Sandbox <postmaster@sandbox29ee27561c3e452ea58e840ba561dcb8.mailgun.org>");
-        //    request.AddParameter("to", "Nicholas Turco <nicholas.turco@hotmail.com>");
-        //    request.AddParameter("subject", "Hello Nicholas Turco");
-        //    request.AddParameter("text", "Congratulations Nicholas Turco, you just sent an email with Mailgun! You are truly awesome!");
-        //    return await client.ExecuteAsync(request);
-        //}
-
+   
     }
 }
