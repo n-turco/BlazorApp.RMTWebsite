@@ -36,6 +36,7 @@ namespace BlazorApp.RMTWebsite.RMTServices
                 request.Content = content;
             }
 
+            //receive the response and post to console if an error occured, move to proper logging later
             var response = await _httpClient.SendAsync(request);
             var responseBody = await response.Content.ReadAsStringAsync();
 
