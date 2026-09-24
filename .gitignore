@@ -361,3 +361,12 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# AI assistant - personal/local files (shared config in .claude/ is committed)
+.claude/settings.local.json
+CLAUDE.local.md
+
+# Office temporary lock files
+~$*
+
+# Local planning documents (kept out of the repository)
+RMT_Website_Plan.docx

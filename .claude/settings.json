@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build*)",
+      "Bash(dotnet test*)",
+      "Bash(dotnet format*)",
+      "Bash(dotnet restore*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git show*)"
+    ],
+    "deny": [
+      "Read(~/AppData/Roaming/Microsoft/UserSecrets/**)",
+      "Read(~/.microsoft/usersecrets/**)",
+      "Read(**/secrets.json)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Bash(dotnet user-secrets list*)",
+      "Bash(git push --force origin master*)",
+      "Bash(git push -f origin master*)"
+    ]
+  }
+}
