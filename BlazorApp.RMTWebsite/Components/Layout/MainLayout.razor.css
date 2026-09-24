@@ -4,8 +4,10 @@
     flex-direction: column;
 }
 
-main {
+/* column that holds the header, page content, and footer */
+.page-body {
     flex: 1;
+    min-width: 0;
 }
 /*side bar background color*/
 .sidebar {
@@ -71,7 +73,7 @@ main {
         width: 0;
     }
 
-    .top-row, article {
+    .top-row, .content {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }
@@ -97,13 +99,3 @@ main {
         right: 0.75rem;
         top: 0.5rem;
     }
-
-footer {
-    background-color: #000000;
-    border-top: 1px solid #d6d5d5;
-    height: 175px;
-    display: flex;
-    width: auto;
-    align-items: center;
-    justify-content: center;
-}
