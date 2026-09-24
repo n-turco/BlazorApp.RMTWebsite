@@ -1,0 +1,58 @@
+<footer class="site-footer">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-12 col-md-4">
+                <h2 class="footer-heading">Kinetic Flow RMT</h2>
+                <p class="mb-0">Nicholas Turco, Registered Massage Therapist</p>
+            </div>
+
+            <nav class="col-6 col-md-4" aria-label="Footer">
+                <h2 class="footer-heading">Quick Links</h2>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="">Home</a></li>
+                    <li><a href="services">Services</a></li>
+                    <li><a href="about">About Me</a></li>
+                    <li><a href="contact">Contact Us</a></li>
+                    <li><a href="faq">FAQ</a></li>
+                </ul>
+            </nav>
+
+            <div class="col-6 col-md-4">
+                <h2 class="footer-heading">Get in Touch</h2>
+                <p>
+                    <a href="contact"><i class="bi bi-envelope me-2" aria-hidden="true"></i>Send a message</a>
+                </p>
+                @if (VisibleSocialLinks.Length > 0)
+                {
+                    <ul class="list-inline social-links mb-0">
+                        @foreach (var link in VisibleSocialLinks)
+                        {
+                            <li class="list-inline-item">
+                                <a href="@link.Url" target="_blank" rel="noopener noreferrer" aria-label="@link.Name (opens in a new tab)">
+                                    <i class="bi @link.Icon" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+
+        <p class="footer-copyright">&copy; @DateTime.Now.Year Kinetic Flow Registered Massage Therapy</p>
+    </div>
+</footer>
+
+@code {
+    // Add the practice's profile URLs here; networks without a URL are not shown.
+    private static readonly SocialLink[] SocialLinks =
+    [
+        new("Facebook", "bi-facebook", null),
+        new("Instagram", "bi-instagram", null),
+        new("X (Twitter)", "bi-twitter-x", null),
+    ];
+
+    private static readonly SocialLink[] VisibleSocialLinks =
+        SocialLinks.Where(link => !string.IsNullOrWhiteSpace(link.Url)).ToArray();
+
+    private sealed record SocialLink(string Name, string Icon, string? Url);
+}
