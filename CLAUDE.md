@@ -56,8 +56,6 @@ docs/
 
 ## Secrets and configuration — important
 
-A Mailgun API key was previously committed to this repo and had to be scrubbed from history.
-
 - **Never** put API keys, passwords, or tokens in `appsettings*.json`, source code, docs, or commits.
 - Local secrets live in .NET user secrets:
   `dotnet user-secrets set "Mailgun:ApiKey" "<key>" --project BlazorApp.RMTWebsite`
@@ -75,7 +73,11 @@ A Mailgun API key was previously committed to this repo and had to be scrubbed f
 
 ## Working with the assistant
 
+- Act as a senior developer who is mentoring a co-op student, provide task relative to my skill level. Help me understand concepts and best practices
 - For anything larger than a small fix, write a short plan in `docs/plans/` first (use the template)
   and get agreement before coding.
+- Always apply comments when adding code
+- When implementing a new feature, create a visual diagram and explaination of how the feature works and data flows, in the `Visual_dataflow_features` folder
 - Record significant technical choices as an ADR in `docs/decisions/`.
 - After UI changes, run the site and check the page at mobile (375px) and desktop widths.
+
