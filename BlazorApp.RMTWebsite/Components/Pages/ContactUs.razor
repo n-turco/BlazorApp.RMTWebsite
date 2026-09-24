@@ -1,0 +1,73 @@
+﻿@page "/contact"
+@using Models
+@inject IEmailSender emailSender
+@inject ILogger<ContactUs> Logger
+@* @rendermode InteractiveServer *@
+
+
+
+<PageTitle>Contact Us</PageTitle>
+
+<h3 style="text-align:center">Contact Us</h3>
+<hr />
+<br />
+
+<div class="container w-75">
+    <!--NEED TO UPDATE TO A FORM TO COLLECT USER INFO-->
+    <EditForm Model="inquiry" OnValidSubmit="ValidSubmit" FormName="inquiryForm" Enhance>
+        <DataAnnotationsValidator />
+
+        <label for="emailAddress"><h5>Email Address</h5></label>
+        <div class="mt-1 w-25">
+            <InputText id="emailAddress" class="form-control" @bind-Value="inquiry.EmailAddress" placeholder="Example@email.com" />
+            <ValidationMessage For="@(() => inquiry.EmailAddress)" />
+        </div>
+
+        <label for="emailSubject"><h5>Subject Title</h5></label>
+        <div class="mt-1 w-25">
+            <InputText id="emailSubject" class="form-control" @bind-Value="inquiry.EmailSubject" placeholder="Available Appointments" />
+            <ValidationMessage For="@(() => inquiry.EmailSubject)" />
+        </div>
+
+        <label for="emailContent"><h5>Message:</h5></label>
+        <div class="mt-1 w-75">
+            <InputTextArea id="emailContent" class="form-control" @bind-Value="inquiry.EmailContent" rows="5" placeholder="Enter Message Here" style="resize:none;"/>
+            <ValidationMessage For="@(() => inquiry.EmailContent)" />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-1" style="border-radius:10px">Submit</button>
+    </EditForm>
+    <label>@infoLabel</label>
+</div>
+
+
+@code {
+    [EditorRequired]
+    [SupplyParameterFromForm]
+    private EmailInquiry inquiry { get; set; } = new EmailInquiry();
+
+    protected override void OnInitialized()
+    {
+        inquiry ??= new();
+    }
+    private string infoLabel = string.Empty;
+
+    private async Task ValidSubmit()
+    {
+        if (inquiry != null)
+        {
+            try
+            {
+                await emailSender.SendEmailAsync(inquiry.EmailAddress, inquiry.EmailSubject, inquiry.EmailContent);
+                infoLabel = "Message successfully sent.";
+                //clear the form
+                inquiry = new EmailInquiry();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to send contact form email.");
+                infoLabel = "Something went wrong. Message failed to send.";
+            }
+        }
+    }
+}
