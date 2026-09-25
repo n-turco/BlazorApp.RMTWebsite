@@ -19,7 +19,7 @@ Run from the repository root:
 ```bash
 dotnet build                                  # build (must finish with 0 warnings, 0 errors)
 dotnet run --project BlazorApp.RMTWebsite     # run locally (see launchSettings.json for URLs)
-dotnet test                                   # run tests (once the test project exists — plan task 6.2)
+dotnet test                                   # run all tests (needs no secrets or network)
 dotnet format --verify-no-changes             # check formatting
 ```
 
@@ -34,6 +34,9 @@ BlazorApp.RMTWebsite/
   Models/                    form and content models (DataAnnotations validation)
   Services/                  EmailSenderService (Mailgun over HttpClient)
   wwwroot/                   static assets; app.css holds site-wide styles
+BlazorApp.RMTWebsite.Tests/  xUnit v3 tests; folders mirror the app (Models/, Services/)
+  Fakes/                     test doubles, e.g. FakeHttpMessageHandler (replaces the network)
+global.json                  opts dotnet test into Microsoft.Testing.Platform (required by xUnit v3)
 docs/
   decisions/                 architecture decision records (ADRs)
   plans/                     feature plans written before larger changes
@@ -52,6 +55,10 @@ docs/
 - **C#:** file-scoped namespaces for new files, nullable enabled, PascalCase properties,
   primary constructors for DI where they're already used.
 - **Accessibility:** target WCAG 2.2 AA — labelled inputs, alt text, visible focus, 4.5:1 contrast.
+- **Testing:** every bug fix includes a test that fails before the fix; every feature ships with
+  tests in the same PR. Name tests `Method_Scenario_ExpectedResult` and lay them out
+  Arrange / Act / Assert. Tests never call Mailgun or need real secrets; use fakes and obviously
+  fake values (`test-api-key`, `@example.test`). See ADR 0002.
 - Keep changes small and focused; one plan task per branch/PR where practical.
 
 ## Secrets and configuration — important

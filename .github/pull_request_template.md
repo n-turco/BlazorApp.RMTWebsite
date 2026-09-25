@@ -14,7 +14,7 @@
 ## Checklist
 
 - [ ] `dotnet build` passes with 0 warnings
-- [ ] Tests added/updated and passing
+- [ ] Tests added/updated and passing (bug fixes include a test that failed before the fix)
 - [ ] Checked at mobile (375px) and desktop widths
 - [ ] Accessible: labels, alt text, keyboard navigation, contrast
 - [ ] No secrets, API keys, or personal data in the diff
