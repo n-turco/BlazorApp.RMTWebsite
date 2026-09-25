@@ -29,7 +29,7 @@ public class EmailInquiryTests
         return results;
     }
 
-    // Worked example: follow this pattern for the tests listed below.
+    // Test the correct input
     [Fact]
     public void Validate_AllFieldsValid_HasNoErrors()
     {
@@ -43,18 +43,133 @@ public class EmailInquiryTests
         Assert.Empty(errors);
     }
 
-    // TODO (your turn): add these tests using the pattern above.
-    //  1. Validate_MissingEmailAddress_HasEmailRequiredError
-    //       Set EmailAddress = "" and assert the error message is "Email Address is required."
-    //       Tip: Assert.Single(errors) returns the only error, so you can check its ErrorMessage.
-    //  2. Validate_InvalidEmailAddress_HasEmailFormatError
-    //       Try "not-an-email". Bonus: turn it into a [Theory] with a few bad addresses.
-    //  3. Validate_MissingSubject_HasSubjectRequiredError
-    //  4. Validate_SubjectOver30Characters_HasSubjectTooLongError
-    //       new string('a', 31) makes a 31-character string.
-    //  5. Validate_SubjectExactly30Characters_HasNoErrors
-    //       A boundary test: limits are where off-by-one bugs hide.
-    //  6. Validate_MissingMessage_HasMessageRequiredError
-    //  7. Validate_MessageOver1000Characters_HasMessageTooLongError
-    //  8. Validate_MessageExactly1000Characters_HasNoErrors
+    // Test a missing email returns correct error message
+    [Fact]
+    public void Validate_MissingEmailAddress_HasEmailRequiredError()
+    {
+        // Arrange
+        var inquiry = CreateValidInquiry();
+        inquiry.EmailAddress = "";
+
+        // Act
+        var errors = Validate(inquiry);
+
+        // Assert
+        var error = Assert.Single(errors);
+        Assert.Equal("Email Address is required.", error.ErrorMessage);
+    }
+
+    // Test for an invalid email address
+    [Theory]
+    [InlineData("not-an-email")]
+    [InlineData("@example.test")]
+    [InlineData("visitor@")]
+    [InlineData("a@b@example.test")]
+    public void Validate_InvalidEmailAddress_HasEmailFormatError(string emailAddress)
+    {
+        // Arrange
+        var inquiry = CreateValidInquiry();
+        inquiry.EmailAddress = emailAddress;
+
+        // Act
+        var errors = Validate(inquiry);
+
+        // Assert
+        var error = Assert.Single(errors);
+        Assert.Equal("Must be a valid email address.", error.ErrorMessage);
+    }
+
+    // Test for a missing subject title
+    [Fact]
+    public void Validate_MissingSubject_HasSubjectRequiredError()
+    {
+        // Arrange
+        var inquiry = CreateValidInquiry();
+        inquiry.EmailSubject = "";
+
+        // Act
+        var errors = Validate(inquiry);
+
+        // Assert
+        var error = Assert.Single(errors);
+        Assert.Equal("Subject line is required.", error.ErrorMessage);
+    }
+
+    // Test for a subject line longer than 30 characters
+    [Fact]
+    public void Validate_SubjectOver30Characters_HasSubjectTooLongError()
+    {
+        // Arrange
+        var inquiry = CreateValidInquiry();
+        inquiry.EmailSubject = new string('a', 31);
+
+        // Act
+        var errors = Validate(inquiry);
+
+        // Assert
+        var error = Assert.Single(errors);
+        Assert.Equal("Subject line is too long.", error.ErrorMessage);
+    }
+
+    // Test for exactly 30 character string
+    [Fact]
+    public void Validate_SubjectExactly30Characters_HasNoErrors()
+    {
+        // Arrange
+        var inquiry = CreateValidInquiry();
+        inquiry.EmailSubject = new string('a', 30);
+
+        // Act
+        var errors = Validate(inquiry);
+
+        // Assert
+        Assert.Empty(errors);
+    }
+
+    // Test for empty message content
+    [Fact]
+    public void Validate_MissingMessage_HasMessageRequiredError()
+    {
+        // Arrange
+        var inquiry = CreateValidInquiry();
+        inquiry.EmailContent = "";
+
+        // Act
+        var errors = Validate(inquiry);
+
+        // Assert
+        var error = Assert.Single(errors);
+        Assert.Equal("Message is required.", error.ErrorMessage);
+    }
+
+    // Test for too many characters in email content
+    [Fact]
+    public void Validate_MessageOver1000Characters_HasMessageTooLongError()
+    {
+        // Arrange
+        var inquiry = CreateValidInquiry();
+        inquiry.EmailContent = new string('a', 1001);
+
+        // Act
+        var errors = Validate(inquiry);
+
+        // Assert
+        var error = Assert.Single(errors);
+        Assert.Equal("Message is too long, must be less than 1000 characters.", error.ErrorMessage);
+    }
+
+    // Test for exactly 1000 characters
+    [Fact]
+    public void Validate_MessageExactly1000Characters_HasNoErrors()
+    {
+        // Arrange
+        var inquiry = CreateValidInquiry();
+        inquiry.EmailContent = new string('a', 1000);
+
+        // Act
+        var errors = Validate(inquiry);
+
+        // Assert
+        Assert.Empty(errors);
+    }
 }
