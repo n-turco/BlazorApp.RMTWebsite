@@ -20,7 +20,7 @@ namespace BlazorApp.RMTWebsite.Services
             var requestUrl = _config["Mailgun:BaseUrl"];
             var toEmail = _config["Mailgun:ToEmail"];
 
-            if(requestUrl == null || apiKey == null)
+            if(requestUrl == null || apiKey == null || toEmail == null)
             {
                 ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<EmailSenderService>();
                 throw new InvalidOperationException("Mailgun configuration is missing.");
@@ -31,17 +31,16 @@ namespace BlazorApp.RMTWebsite.Services
             var authToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{apiKey}"));
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", authToken);
 
-            if(toEmail != null) 
-            {
-                var content = new FormUrlEncodedContent(new Dictionary<string, string>
+
+            var content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 { "from", "postmaster@sandbox29ee27561c3e452ea58e840ba561dcb8.mailgun.org" },
                 { "to", toEmail },
                 { "subject", subject },
                 { "text", htmlMessage }
             });
-                request.Content = content;
-            }
+            
+            request.Content = content;
 
             //receive the response and post to console if an error occured, move to proper logging later
             var response = await _httpClient.SendAsync(request);

@@ -104,6 +104,7 @@ public class EmailSenderServiceTests
     [Theory]
     [InlineData("Mailgun:ApiKey")]
     [InlineData("Mailgun:BaseUrl")]
+    [InlineData("Mailgun:ToEmail")]
     public async Task SendEmailAsync_MissingRequiredSetting_ThrowsWithoutSending(string missingKey)
     {
         // Arrange: remove one required setting.
