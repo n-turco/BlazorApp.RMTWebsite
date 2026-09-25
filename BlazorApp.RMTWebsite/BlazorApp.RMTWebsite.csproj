@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="images\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\profilePic.jpg" />
   </ItemGroup>
 
