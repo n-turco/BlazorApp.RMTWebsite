@@ -35,7 +35,7 @@ namespace BlazorApp.RMTWebsite.Services
                 { "from", "postmaster@sandbox29ee27561c3e452ea58e840ba561dcb8.mailgun.org" },
                 { "to", toEmail },
                 { "subject", subject },
-                { "text", htmlMessage },
+                { "text", $"From: {email}\n\n{htmlMessage}" },
                 { "h:Reply-To", email }
             });
 

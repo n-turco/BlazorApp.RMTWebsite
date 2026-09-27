@@ -97,7 +97,7 @@ public class EmailSenderServiceTests
 
         Assert.Equal(TestToEmail, form["to"]);
         Assert.Equal("Booking question", form["subject"]);
-        Assert.Equal("Do you have Saturday times?", form["text"]);
+        Assert.Equal("From: visitor@example.test\n\nDo you have Saturday times?", form["text"]);
     }
 
     // [Theory] runs the same test once per [InlineData] row, here once per required setting.
@@ -146,5 +146,20 @@ public class EmailSenderServiceTests
         // Assert
         var form = QueryHelpers.ParseQuery(handler.LastRequestBody);
         Assert.Equal("visitor@example.test", form["h:Reply-To"]);
+    }
+
+    [Fact]
+    public async Task SendEmailAsync_ValidConfig_StartsBodyWithVisitorEmail()
+    {
+        // Arrange
+        var handler = new FakeHttpMessageHandler();
+        var service = CreateService(handler);
+
+        // Act
+        await service.SendEmailAsync("visitor@example.test", "Booking question", "Do you have Saturday times?");
+
+        // Assert
+        var form = QueryHelpers.ParseQuery(handler.LastRequestBody);
+        Assert.StartsWith("From: visitor@example.test", form["text"].ToString());
     }
 }
