@@ -19,14 +19,14 @@ namespace BlazorApp.RMTWebsite.Services
             var requestUrl = _config["Mailgun:BaseUrl"];
             var toEmail = _config["Mailgun:ToEmail"];
 
-            if(requestUrl == null || apiKey == null || toEmail == null)
+            if (requestUrl == null || apiKey == null || toEmail == null)
             {
                 ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<EmailSenderService>();
                 throw new InvalidOperationException("Mailgun configuration is missing.");
             }
 
             var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
-  
+
             var authToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{apiKey}"));
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", authToken);
 
@@ -38,7 +38,7 @@ namespace BlazorApp.RMTWebsite.Services
                 { "text", htmlMessage },
                 { "h:Reply-To", email }
             });
-            
+
             request.Content = content;
 
             //receive the response and post to console if an error occured, move to proper logging later
@@ -53,6 +53,6 @@ namespace BlazorApp.RMTWebsite.Services
 
             Console.WriteLine($"Mailgun Success: {responseBody}");
         }
-   
+
     }
 }
