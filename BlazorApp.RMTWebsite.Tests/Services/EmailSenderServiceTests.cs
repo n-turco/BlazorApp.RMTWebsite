@@ -44,22 +44,24 @@ public class EmailSenderServiceTests
     private static EmailSenderService CreateService(FakeHttpMessageHandler handler, IConfiguration? config = null)
         => new(new HttpClient(handler), config ?? BuildConfig());
 
+    // This test checks that the service posts to the configured Mailgun URL.
     [Fact]
     public async Task SendEmailAsync_ValidConfig_PostsToMailgunBaseUrl()
     {
-        // Arrange: set up the fake network and the service under test.
+        // Arrange
         var handler = new FakeHttpMessageHandler();
         var service = CreateService(handler);
 
-        // Act: do the one thing this test is about.
+        // Act
         await service.SendEmailAsync("visitor@example.test", "Hello", "Test message");
 
-        // Assert: check the outcome. The request must be a POST to the configured URL.
+        // Assert
         Assert.NotNull(handler.LastRequest);
         Assert.Equal(HttpMethod.Post, handler.LastRequest.Method);
         Assert.Equal(TestBaseUrl, handler.LastRequest.RequestUri?.ToString());
     }
 
+    // This test checks that the service uses HTTP Basic auth with the API key, as Mailgun requires.
     [Fact]
     public async Task SendEmailAsync_ValidConfig_UsesBasicAuthWithApiKey()
     {
@@ -81,6 +83,7 @@ public class EmailSenderServiceTests
         Assert.Equal(expectedToken, auth.Parameter);
     }
 
+    // This test checks that the visitor's email, subject, and message are all included in the request body.
     [Fact]
     public async Task SendEmailAsync_ValidConfig_SendsRecipientSubjectAndMessage()
     {
@@ -120,6 +123,7 @@ public class EmailSenderServiceTests
         Assert.Null(handler.LastRequest);
     }
 
+    // This test simulates Mailgun returning an error, e.g. because the API key is wrong.
     [Fact]
     public async Task SendEmailAsync_MailgunReturnsError_Throws()
     {
@@ -133,6 +137,7 @@ public class EmailSenderServiceTests
             () => service.SendEmailAsync("visitor@example.test", "Hello", "Test message"));
     }
 
+    // This test checks that the visitor's email is included in the body of the message.
     [Fact]
     public async Task SendEmailAsync_ValidConfig_SetsReplyToVisitorEmail()
     {
@@ -148,6 +153,7 @@ public class EmailSenderServiceTests
         Assert.Equal("visitor@example.test", form["h:Reply-To"]);
     }
 
+    // This test explicitly checks that the email body starts with the visitor's email.
     [Fact]
     public async Task SendEmailAsync_ValidConfig_StartsBodyWithVisitorEmail()
     {
@@ -161,5 +167,22 @@ public class EmailSenderServiceTests
         // Assert
         var form = QueryHelpers.ParseQuery(handler.LastRequestBody);
         Assert.StartsWith("From: visitor@example.test", form["text"].ToString());
+    }
+
+    // [Theory] runs the same test once per [InlineData] row, here once per invalid email.
+    [Theory]
+    [InlineData("")]
+    [InlineData("not-an-email")]
+    [InlineData("Visitor@example.test\r\nBcc: victim@example.test")]
+    [InlineData("Visitor <visitor@example.test>")]
+    public async Task SendEmailAsync_InvalidVisitorEmail_ThrowsWithoutSending(string visitorEmail)
+    {
+        // Arrange
+        var handler = new FakeHttpMessageHandler();
+        var service = CreateService(handler);
+
+        // Act + Assert
+        await Assert.ThrowsAsync<ArgumentException>(() => service.SendEmailAsync(visitorEmail, "Booking question", "Do you have Saturday times?"));
+        Assert.Null(handler.LastRequest);
     }
 }

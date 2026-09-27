@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Net.Http.Headers;
+using System.Net.Mail;
 using System.Text;
 
 
@@ -19,10 +20,17 @@ namespace BlazorApp.RMTWebsite.Services
             var requestUrl = _config["Mailgun:BaseUrl"];
             var toEmail = _config["Mailgun:ToEmail"];
 
+            // Validate that the required configuration values are present
             if (requestUrl == null || apiKey == null || toEmail == null)
             {
                 ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<EmailSenderService>();
                 throw new InvalidOperationException("Mailgun configuration is missing.");
+            }
+
+            // Validate the email address format
+            if (!MailAddress.TryCreate(email, out var parsed) || parsed.Address != email)
+            {
+                throw new ArgumentException("Visitor email address is invalid.", nameof(email));
             }
 
             var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
