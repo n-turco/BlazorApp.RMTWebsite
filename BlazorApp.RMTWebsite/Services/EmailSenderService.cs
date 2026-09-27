@@ -15,7 +15,6 @@ namespace BlazorApp.RMTWebsite.Services
         //send email
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-
             var apiKey = _config["Mailgun:ApiKey"];
             var requestUrl = _config["Mailgun:BaseUrl"];
             var toEmail = _config["Mailgun:ToEmail"];
@@ -27,17 +26,17 @@ namespace BlazorApp.RMTWebsite.Services
             }
 
             var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
-
+  
             var authToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{apiKey}"));
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", authToken);
-
 
             var content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 { "from", "postmaster@sandbox29ee27561c3e452ea58e840ba561dcb8.mailgun.org" },
                 { "to", toEmail },
                 { "subject", subject },
-                { "text", htmlMessage }
+                { "text", htmlMessage },
+                { "h:Reply-To", email }
             });
             
             request.Content = content;

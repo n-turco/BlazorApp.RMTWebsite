@@ -132,4 +132,19 @@ public class EmailSenderServiceTests
         await Assert.ThrowsAsync<InvalidOperationException>(
             () => service.SendEmailAsync("visitor@example.test", "Hello", "Test message"));
     }
+
+    [Fact]
+    public async Task SendEmailAsync_ValidConfig_SetsReplyToVisitorEmail()
+    {
+        // Arrange
+        var handler = new FakeHttpMessageHandler();
+        var service = CreateService(handler);
+
+        // Act
+        await service.SendEmailAsync("visitor@example.test", "Booking question", "Do you have Saturday times?");
+
+        // Assert
+        var form = QueryHelpers.ParseQuery(handler.LastRequestBody);
+        Assert.Equal("visitor@example.test", form["h:Reply-To"]);
+    }
 }
