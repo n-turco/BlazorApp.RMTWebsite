@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Net.Http.Headers;
+using System.Net.Mail;
 using System.Text;
 
 
@@ -15,15 +16,21 @@ namespace BlazorApp.RMTWebsite.Services
         //send email
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-
             var apiKey = _config["Mailgun:ApiKey"];
             var requestUrl = _config["Mailgun:BaseUrl"];
             var toEmail = _config["Mailgun:ToEmail"];
 
-            if(requestUrl == null || apiKey == null)
+            // Validate that the required configuration values are present
+            if (requestUrl == null || apiKey == null || toEmail == null)
             {
                 ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<EmailSenderService>();
                 throw new InvalidOperationException("Mailgun configuration is missing.");
+            }
+
+            // Validate the email address format
+            if (!MailAddress.TryCreate(email, out var parsed) || parsed.Address != email)
+            {
+                throw new ArgumentException("Visitor email address is invalid.", nameof(email));
             }
 
             var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
@@ -31,17 +38,16 @@ namespace BlazorApp.RMTWebsite.Services
             var authToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{apiKey}"));
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", authToken);
 
-            if(toEmail != null) 
-            {
-                var content = new FormUrlEncodedContent(new Dictionary<string, string>
+            var content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 { "from", "postmaster@sandbox29ee27561c3e452ea58e840ba561dcb8.mailgun.org" },
                 { "to", toEmail },
                 { "subject", subject },
-                { "text", htmlMessage }
+                { "text", $"From: {email}\n\n{htmlMessage}" },
+                { "h:Reply-To", email }
             });
-                request.Content = content;
-            }
+
+            request.Content = content;
 
             //receive the response and post to console if an error occured, move to proper logging later
             var response = await _httpClient.SendAsync(request);
@@ -55,6 +61,6 @@ namespace BlazorApp.RMTWebsite.Services
 
             Console.WriteLine($"Mailgun Success: {responseBody}");
         }
-   
+
     }
 }

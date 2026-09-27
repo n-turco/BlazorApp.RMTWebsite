@@ -7,7 +7,7 @@ namespace BlazorApp.RMTWebsite.Models
     public class EmailInquiry
     {
         [Required(ErrorMessage = "Email Address is required.")]
-        [EmailAddress(ErrorMessage = "Must be a valid email address.")]  
+        [EmailAddress(ErrorMessage = "Must be a valid email address.")]
         public string EmailAddress { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Subject line is required.")]
