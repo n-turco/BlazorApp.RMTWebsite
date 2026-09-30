@@ -370,3 +370,7 @@ CLAUDE.local.md
 
 # Local planning documents (kept out of the repository)
 RMT_Website_Plan.docx
+RMT_Website_Plan.backup-*.docx
+
+# Local scratch notes that may contain credentials (never commit)
+mailgun.txt
