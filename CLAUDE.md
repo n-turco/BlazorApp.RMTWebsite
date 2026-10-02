@@ -84,7 +84,7 @@ docs/
 - For anything larger than a small fix, write a short plan in `docs/plans/` first (use the template)
   and get agreement before coding.
 - Always apply comments when adding code
-- When implementing a new feature, create a visual flow chart and explaination of how the feature works and data flows, in the `Visual_dataflow_features` folder
+- When implementing a new feature, follow clean architecture design, create a visual flow chart and explaination of how the feature works and data flows, in the `Visual_dataflow_features` folder
 - Record significant technical choices as an ADR in `docs/decisions/`.
 - After UI changes, run the site and check the page at mobile (375px) and desktop widths.
 
