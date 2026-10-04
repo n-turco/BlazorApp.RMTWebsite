@@ -19,20 +19,20 @@
 
         <label for="emailAddress"><h5>Email Address</h5></label>
         <div class="mt-1 w-25">
-            <InputText id="emailAddress" class="form-control" @bind-Value="inquiry.EmailAddress" placeholder="Example@email.com" />
-            <ValidationMessage For="@(() => inquiry.EmailAddress)" />
+            <InputText id="emailAddress" class="form-control" @bind-Value="inquiry!.EmailAddress" placeholder="Example@email.com" />
+            <ValidationMessage For="@(() => inquiry!.EmailAddress)" />
         </div>
 
         <label for="emailSubject"><h5>Subject Title</h5></label>
         <div class="mt-1 w-25">
-            <InputText id="emailSubject" class="form-control" @bind-Value="inquiry.EmailSubject" placeholder="Available Appointments" />
-            <ValidationMessage For="@(() => inquiry.EmailSubject)" />
+            <InputText id="emailSubject" class="form-control" @bind-Value="inquiry!.EmailSubject" placeholder="Available Appointments" />
+            <ValidationMessage For="@(() => inquiry!.EmailSubject)" />
         </div>
 
         <label for="emailContent"><h5>Message:</h5></label>
         <div class="mt-1 w-75">
-            <InputTextArea id="emailContent" class="form-control" @bind-Value="inquiry.EmailContent" rows="5" placeholder="Enter Message Here" style="resize:none;"/>
-            <ValidationMessage For="@(() => inquiry.EmailContent)" />
+            <InputTextArea id="emailContent" class="form-control" @bind-Value="inquiry!.EmailContent" rows="5" placeholder="Enter Message Here" style="resize:none;"/>
+            <ValidationMessage For="@(() => inquiry!.EmailContent)" />
         </div>
 
         <button type="submit" class="btn btn-primary mt-1" style="border-radius:10px">Submit</button>
@@ -42,9 +42,8 @@
 
 
 @code {
-    [EditorRequired]
     [SupplyParameterFromForm]
-    private EmailInquiry inquiry { get; set; } = new EmailInquiry();
+    private EmailInquiry? inquiry { get; set; }
 
     protected override void OnInitialized()
     {
