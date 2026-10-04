@@ -4,6 +4,7 @@ using BlazorApp.RMTWebsite.Services;
 using BlazorApp.RMTWebsite.Tests.Fakes;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace BlazorApp.RMTWebsite.Tests.Services;
 
@@ -41,8 +42,8 @@ public class EmailSenderServiceTests
     }
 
     /// <summary>Creates the service wired to the fake handler instead of the real network.</summary>
-    private static EmailSenderService CreateService(FakeHttpMessageHandler handler, IConfiguration? config = null)
-        => new(new HttpClient(handler), config ?? BuildConfig());
+    private static EmailSenderService CreateService(FakeHttpMessageHandler handler, IConfiguration? config = null, FakeLogger<EmailSenderService>? logger = null)
+        => new(new HttpClient(handler), config ?? BuildConfig(), logger ?? new FakeLogger<EmailSenderService>());
 
     // This test checks that the service posts to the configured Mailgun URL.
     [Fact]
@@ -184,5 +185,98 @@ public class EmailSenderServiceTests
         // Act + Assert
         await Assert.ThrowsAsync<ArgumentException>(() => service.SendEmailAsync(visitorEmail, "Booking question", "Do you have Saturday times?"));
         Assert.Null(handler.LastRequest);
+    }
+
+    // This test checks that a failed send is logged as an Error that includes Mailgun's status code.
+    [Fact]
+    public async Task SendEmailAsync_MailgunReturnsError_LogsErrorWithStatusCode()
+    {
+        // Arrange: Mailgun replies 401 Unauthorized, and we keep a reference to the logger to inspect it.
+        var handler = new FakeHttpMessageHandler(HttpStatusCode.Unauthorized, "Forbidden");
+        var logger = new FakeLogger<EmailSenderService>();
+        var service = CreateService(handler, logger: logger);
+
+        // Act: the service still throws, so catch it; this test only checks the logs.
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => service.SendEmailAsync("visitor@example.test", "Hello", "Test message"));
+
+        // Assert: exactly one Error entry, and it mentions the numeric status code (401).
+        var entry = Assert.Single(logger.Entries, e => e.Level == LogLevel.Error);
+        Assert.Contains("401", entry.Message);
+    }
+
+    // This test checks that if Mailgun returns an error, the logger does not log the response body, which could contain sensitive information.
+    [Fact]
+    public async Task SendEmailAsync_MailgunReturnsError_DoesNotLogResponseBody()
+    {
+        // Arrange
+        var handler = new FakeHttpMessageHandler(HttpStatusCode.Unauthorized, "secret-response-body");
+        var logger = new FakeLogger<EmailSenderService>();
+        var service = CreateService(handler, logger: logger);
+
+        // Act
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => service.SendEmailAsync("visitor@example.test", "Hello", "Test Message"));
+
+        // Assert
+        Assert.DoesNotContain(logger.Entries, e => e.Message.Contains("secret-response-body"));
+    }
+
+    // This test checks that if Mailgun returns an error, the exception thrown does not include the response body, which could contain sensitive information.
+    [Fact]
+    public async Task SendEmailAsync_MailgunReturnsError_ExceptionOmitsResponseBody()
+    {
+        // Arrange
+        var handler = new FakeHttpMessageHandler(HttpStatusCode.Unauthorized, "secret-response-body");
+        var service = CreateService(handler);
+
+        // Act
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => service.SendEmailAsync("visitor@example.test", "Hello", "Test Message"));
+
+        // Assert
+        Assert.DoesNotContain("secret-response-body", ex.Message);
+    }
+
+    // This test checks that a successful send is logged as Information, but without including the visitor's email, subject, or message.
+    [Fact]
+    public async Task SendEmailAsync_MailgunValidConfig_LogsInformationWithoutVisitorDetails()
+    {
+        // Arrange
+        var handler = new FakeHttpMessageHandler();
+        var logger = new FakeLogger<EmailSenderService>();
+        var service = CreateService(handler, logger: logger);
+
+        // Act
+        await service.SendEmailAsync("visitor@example.test", "Booking question", "Do you have Saturday times?");
+
+        // Assert
+        Assert.Single(logger.Entries, e => e.Level == LogLevel.Information);
+        Assert.DoesNotContain(logger.Entries, e => e.Message.Contains("visitor@example.test"));
+        Assert.DoesNotContain(logger.Entries, e => e.Message.Contains("Booking question"));
+        Assert.DoesNotContain(logger.Entries, e => e.Message.Contains("Saturday"));
+    }
+
+    // This test checks that if a required setting is missing, the service logs an Error that names the missing key, but does not log the API key's value.
+    [Theory]
+    [InlineData("Mailgun:ApiKey")]
+    [InlineData("Mailgun:BaseUrl")]
+    [InlineData("Mailgun:ToEmail")]
+    public async Task SendEmailAsync_MailgunMissingRequiredSetting_LogsError(string missingKey)
+    {
+        // Arrange
+        var handler = new FakeHttpMessageHandler();
+        var config = BuildConfig(new() { [missingKey] = null });
+        var logger = new FakeLogger<EmailSenderService>();
+        var service = CreateService(handler, config, logger);
+
+        // Act
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => service.SendEmailAsync("visitor@example.test", "", ""));
+
+        // Assert: one Error entry that names the missing key, without leaking the API key's value.
+        var entry = Assert.Single(logger.Entries, e => e.Level == LogLevel.Error);
+        Assert.Contains(missingKey, entry.Message);
+        Assert.DoesNotContain(TestApiKey, entry.Message);
     }
 }

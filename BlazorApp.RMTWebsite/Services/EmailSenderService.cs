@@ -6,14 +6,12 @@ using System.Text;
 
 namespace BlazorApp.RMTWebsite.Services
 {
-    public class EmailSenderService(HttpClient httpClient, IConfiguration config) : IEmailSender
+    public class EmailSenderService(HttpClient httpClient, IConfiguration config, ILogger<EmailSenderService> logger) : IEmailSender
     {
         private readonly HttpClient _httpClient = httpClient;
         private readonly IConfiguration _config = config;
 
-        //configure client
-        //prepare email
-        //send email
+        // Sends contact form message to the site owner through Mailgun HTTP API
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             var apiKey = _config["Mailgun:ApiKey"];
@@ -21,10 +19,28 @@ namespace BlazorApp.RMTWebsite.Services
             var toEmail = _config["Mailgun:ToEmail"];
 
             // Validate that the required configuration values are present
-            if (requestUrl == null || apiKey == null || toEmail == null)
+            if (string.IsNullOrWhiteSpace(requestUrl)
+                || string.IsNullOrWhiteSpace(apiKey)
+                || string.IsNullOrWhiteSpace(toEmail))
             {
-                ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<EmailSenderService>();
-                throw new InvalidOperationException("Mailgun configuration is missing.");
+                var missingKeys = new List<string>();
+                if (string.IsNullOrWhiteSpace(apiKey))
+                {
+                    missingKeys.Add("Mailgun:ApiKey");
+                }
+
+                if (string.IsNullOrWhiteSpace(requestUrl))
+                {
+                    missingKeys.Add("Mailgun:BaseUrl");
+                }
+
+                if (string.IsNullOrWhiteSpace(toEmail))
+                {
+                    missingKeys.Add("Mailgun:ToEmail");
+                }
+
+                logger.LogError("Mailgun configuration is missing required settings: {MissingKeys}", missingKeys);
+                throw new InvalidOperationException("Mailgun configuration is missing");
             }
 
             // Validate the email address format
@@ -49,18 +65,16 @@ namespace BlazorApp.RMTWebsite.Services
 
             request.Content = content;
 
-            //receive the response and post to console if an error occured, move to proper logging later
+            // Send to Mailgun; log the outcome without the response body or visitor details.
             var response = await _httpClient.SendAsync(request);
-            var responseBody = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
             {
-                Console.WriteLine($"Mailgun Error: {response.StatusCode} - {responseBody}");
-                throw new InvalidOperationException($"Failed to send email: {responseBody}");
+                logger.LogError("Contact email failed to send. Mailgun returned status {StatusCode}.", (int)response.StatusCode);
+                throw new InvalidOperationException($"Mailgun returned status {(int)response.StatusCode}.");
             }
 
-            Console.WriteLine($"Mailgun Success: {responseBody}");
+            logger.LogInformation("Contact email successfully sent. Mailgun returned status {StatusCode}.", (int)response.StatusCode);
         }
-
     }
 }
