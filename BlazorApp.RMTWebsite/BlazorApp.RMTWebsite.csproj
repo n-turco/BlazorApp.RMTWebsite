@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
     <UserSecretsId>11ff28e8-85ae-44c6-a5c0-58b0c59a4020</UserSecretsId>
-        <!-- BL0008: [SupplyParameterFromForm] properties must not have initializers (can be nulled on post) -->
+    <!-- BL0008: [SupplyParameterFromForm] properties must not have initializers (can be nulled on post) -->
     <WarningsAsErrors>$(WarningsAsErrors);BL0008</WarningsAsErrors>
   </PropertyGroup>
 
