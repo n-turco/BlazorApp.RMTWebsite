@@ -11,13 +11,13 @@
 }
 /*side bar background color*/
 .sidebar {
-    background-color: #38caff;
+    background-color: var(--brand-accent);
   
 }
 
 .top-row {
-    background-color: #000000;
-    border-bottom: 1px solid #d6d5d5;
+    background-color: var(--brand-dark);
+    border-bottom: 1px solid var(--brand-border);
     justify-content: center;
     height: 3.6rem;
     display: flex;
