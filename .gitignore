@@ -374,3 +374,6 @@ RMT_Website_Plan.backup-*.docx
 
 # Local scratch notes that may contain credentials (never commit)
 mailgun.txt
+
+# Throwaway Python env for tools/make_icons.py
+.venv-icons/

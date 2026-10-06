@@ -1,0 +1,22 @@
+/* Mark and name side by side, vertically centred. Moved here from NavMenu.razor.css: the <a> is now
+   rendered by this component, so NavMenu's scoped rule would no longer match it. */
+.brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.3rem;
+    color: var(--brand-light);
+}
+
+    .brand-logo:hover,
+    .brand-logo:focus {
+        color: var(--brand-light);
+    }
+
+/* Fixed size so the mark lines up with the text; the width/height attributes in the markup
+   reserve the space before the SVG loads. */
+.brand-mark {
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+}
