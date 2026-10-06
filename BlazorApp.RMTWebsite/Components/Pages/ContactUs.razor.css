@@ -1,0 +1,7 @@
+/* Message box: visitors can drag it taller to read a long message, but not wider, which would
+   break the layout. The <textarea> is rendered by the InputTextArea component, not by this page,
+   so it doesn't get this page's CSS-isolation attribute. ::deep reaches it through .message-field,
+   a <div> this page does render. */
+.message-field ::deep textarea {
+    resize: vertical;
+}

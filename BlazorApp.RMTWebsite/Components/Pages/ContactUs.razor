@@ -30,12 +30,12 @@
         </div>
 
         <label for="emailContent"><h5>Message:</h5></label>
-        <div class="mt-1 w-75">
-            <InputTextArea id="emailContent" class="form-control" @bind-Value="Inquiry!.EmailContent" rows="5" placeholder="Enter Message Here" style="resize:none;"/>
+        <div class="message-field mt-1 w-75">
+            <InputTextArea id="emailContent" class="form-control" @bind-Value="Inquiry!.EmailContent" rows="5" placeholder="Enter Message Here" />
             <ValidationMessage For="@(() => Inquiry!.EmailContent)" />
         </div>
 
-        <button type="submit" class="btn btn-primary mt-1" style="border-radius:10px" data-disable-on-submit>Submit</button>
+        <button type="submit" class="btn btn-primary rounded-3 mt-1" data-disable-on-submit>Submit</button>
     </EditForm>
     <label>@infoLabel</label>
 </div>
