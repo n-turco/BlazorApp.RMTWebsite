@@ -1,0 +1,9 @@
+/* Profile photo: 500px tall on desktop, and shrinks to fit narrow phones.
+   With width and height both auto, the max-height and max-width limits scale the image
+   down while keeping its shape. Centring comes from Bootstrap's d-block mx-auto in the markup. */
+.profile-photo {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 500px;
+}

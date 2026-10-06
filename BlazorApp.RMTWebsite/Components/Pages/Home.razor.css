@@ -1,0 +1,16 @@
+/* Hero image frame. Fixed 600px tall for now; plan 2.2 replaces it with a responsive height
+   and a headline. overflow: hidden crops whatever part of the image doesn't fit. */
+.hero {
+    width: 100%;
+    height: 600px;
+    overflow: hidden;
+}
+
+/* Fill the frame without stretching: object-fit: cover scales the image to cover the whole
+   box and crops the edges, like a CSS background-size: cover. */
+.hero-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

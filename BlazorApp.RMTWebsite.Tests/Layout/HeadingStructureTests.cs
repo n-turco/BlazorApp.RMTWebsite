@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using BlazorApp.RMTWebsite.Tests.Helpers;
 
 namespace BlazorApp.RMTWebsite.Tests.Layout;
 
@@ -11,18 +12,8 @@ namespace BlazorApp.RMTWebsite.Tests.Layout;
 /// </summary>
 public class HeadingStructureTests
 {
-    /// <summary>The copy of the site's Components folder in the test output.</summary>
-    private static readonly string ComponentsPath = Path.Combine(AppContext.BaseDirectory, "SiteFiles", "Components");
-
-    /// <summary>
-    /// Counts opening &lt;h1&gt; tags, with or without attributes. Razor (@* *@) and HTML (&lt;!-- --&gt;)
-    /// comments are removed first, because they never reach the browser. Doesn't match &lt;h10&gt; or &lt;hr&gt;.
-    /// </summary>
-    private static int CountH1Tags(string markup)
-    {
-        var withoutComments = Regex.Replace(markup, @"@\*.*?\*@|<!--.*?-->", "", RegexOptions.Singleline);
-        return Regex.Matches(withoutComments, @"<h1[\s>]", RegexOptions.IgnoreCase).Count;
-    }
+    /// <summary>Counts opening &lt;h1&gt; tags, with or without attributes. Doesn't match &lt;h10&gt; or &lt;hr&gt;.</summary>
+    private static int CountH1Tags(string markup) => Regex.Matches(markup, @"<h1[\s>]", RegexOptions.IgnoreCase).Count;
 
     /// <summary>
     /// Every page with an @page directive, as a file name such as "FAQ.razor". Each one becomes a
@@ -31,7 +22,7 @@ public class HeadingStructureTests
     public static TheoryData<string> RoutablePages()
     {
         var pages = new TheoryData<string>();
-        foreach (var file in Directory.GetFiles(Path.Combine(ComponentsPath, "Pages"), "*.razor"))
+        foreach (var file in Directory.GetFiles(Path.Combine(RazorSource.ComponentsPath, "Pages"), "*.razor"))
         {
             if (File.ReadAllText(file).Contains("@page"))
             {
@@ -46,7 +37,7 @@ public class HeadingStructureTests
     public void MainLayout_Header_ContainsNoH1()
     {
         // Arrange
-        var layout = File.ReadAllText(Path.Combine(ComponentsPath, "Layout", "MainLayout.razor"));
+        var layout = RazorSource.ReadWithoutComments(Path.Combine("Layout", "MainLayout.razor"));
 
         // Act
         var h1Count = CountH1Tags(layout);
@@ -61,7 +52,7 @@ public class HeadingStructureTests
     public void Page_EachRoutablePage_HasExactlyOneH1(string pageFile)
     {
         // Arrange
-        var page = File.ReadAllText(Path.Combine(ComponentsPath, "Pages", pageFile));
+        var page = RazorSource.ReadWithoutComments(Path.Combine("Pages", pageFile));
 
         // Act
         var h1Count = CountH1Tags(page);
