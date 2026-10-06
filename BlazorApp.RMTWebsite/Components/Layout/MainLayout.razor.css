@@ -19,9 +19,24 @@
     background-color: var(--brand-dark);
     border-bottom: 1px solid var(--brand-border);
     justify-content: center;
-    height: 3.6rem;
+    /* min-height (not height) so the bar grows when the title wraps on narrow phones,
+       instead of the text spilling out over the page (plan 2.4). */
+    min-height: 3.6rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     display: flex;
     align-items: center;
+}
+
+/* Site name in the header. Uses the heading font so it still reads as the brand, and
+   clamp() scales it from phone (1.25rem, at most two lines at 320px) to desktop (2.25rem). */
+.site-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.25rem, 0.9rem + 1.8vw, 2.25rem);
+    font-weight: 500;
+    line-height: var(--lh-heading);
+    text-align: center;
+    margin: 0; /* <p> has a bottom margin by default, which would push the text off-centre */
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
