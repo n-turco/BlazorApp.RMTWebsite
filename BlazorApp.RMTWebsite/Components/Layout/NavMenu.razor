@@ -1,38 +1,32 @@
-﻿<div class="top-row ps-3 navbar">
-    <div class="container-fluid">
+@* Top navbar (plan 2.3): logo left, links and Book now right. Below Bootstrap's lg breakpoint
+   (992px) the links fold into a menu opened by the toggler button. Bootstrap's collapse script
+   (loaded in App.razor) handles the click and keeps aria-expanded up to date. *@
+<nav class="navbar navbar-expand-lg site-navbar" aria-label="Main">
+    <div class="container-fluid px-3 px-lg-4">
         <BrandLogo />
+
+        @* A real <button>, so screen readers announce "Menu, button, collapsed/expanded".
+           aria-controls points at the list it opens. *@
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav"
+                aria-controls="main-nav" aria-expanded="false" aria-label="Menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        @* Enhanced navigation re-renders this <div> from the server's HTML (class "collapse", no
+           "show"), so the open phone menu closes after a link is followed. *@
+        <div class="collapse navbar-collapse" id="main-nav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                @* NavLink adds class="active" and aria-current="page" to the current page's link. *@
+                <li class="nav-item"><NavLink class="nav-link" href="" Match="NavLinkMatch.All">Home</NavLink></li>
+                <li class="nav-item"><NavLink class="nav-link" href="services">Services</NavLink></li>
+                <li class="nav-item"><NavLink class="nav-link" href="about">About Me</NavLink></li>
+                <li class="nav-item"><NavLink class="nav-link" href="contact">Contact Us</NavLink></li>
+                <li class="nav-item"><NavLink class="nav-link" href="faq">FAQ</NavLink></li>
+                @* Points at the contact form until online booking exists (plan 4.1 changes this one URL). *@
+                <li class="nav-item book-item">
+                    <a class="btn book-button" href="contact">Book now</a>
+                </li>
+            </ul>
+        </div>
     </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="services">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Services
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="about">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> About Me
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="contact">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Contact Us
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="faq">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> FAQ
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
+</nav>
