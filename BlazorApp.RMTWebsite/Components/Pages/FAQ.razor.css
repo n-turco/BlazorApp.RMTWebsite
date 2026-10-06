@@ -1,0 +1,80 @@
+/* FAQ page (plan 2.7). Native <details>/<summary> styled as an accordion: a full-width row per
+   question, a +/− marker on the right, and a light divider between questions. */
+
+/* Space between groups, and before the closing call to action band. */
+.faq-group {
+    margin-bottom: 2.5rem;
+}
+
+.faq-group-heading {
+    margin-bottom: 1rem;
+}
+
+/* Dividers above the first question and below every question in the group. Decorative, so they
+   don't need the 3:1 non-text contrast; the marker and text carry the meaning. */
+.faq-item {
+    border-bottom: 1px solid var(--brand-border);
+}
+
+.faq-item:first-of-type {
+    border-top: 1px solid var(--brand-border);
+}
+
+/* The question row: the whole row is the click/tap target (well over the 24×24px WCAG 2.5.8 minimum).
+   Right padding keeps long questions clear of the marker when they wrap. */
+.faq-item summary {
+    position: relative;
+    display: block;
+    padding: 1rem 2.5rem 1rem 0;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none; /* hide the browser's default triangle; the +/− below replaces it */
+}
+
+/* Safari still shows its own triangle without this. */
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+/* "+" when closed, "−" when open, in brand blue (#007099 on white, 5.56:1). Screen readers can read
+   ::after text, so each content rule is written twice: the second uses the alt-text syntax ( / "")
+   to mark it decorative, and the first is the fallback for browsers that don't support that.
+   Screen readers already announce "collapsed"/"expanded" for <details>. */
+.faq-item summary::after {
+    content: "+";
+    content: "+" / "";
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    line-height: 1;
+    font-weight: 400;
+    color: var(--brand-primary);
+}
+
+.faq-item[open] summary::after {
+    content: "\2212"; /* minus sign */
+    content: "\2212" / "";
+}
+
+/* Visible keyboard focus: brand blue outline (5.56:1), just outside the row so it never touches the
+   question text. The container's side padding leaves room for it. */
+.faq-item summary:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+}
+
+/* Hover hint for mouse users (colour change only; the marker already shows the state). */
+.faq-item summary:hover {
+    color: var(--brand-primary);
+}
+
+.faq-answer {
+    padding-bottom: 1rem;
+}
+
+.faq-answer p:last-child {
+    margin-bottom: 0;
+}

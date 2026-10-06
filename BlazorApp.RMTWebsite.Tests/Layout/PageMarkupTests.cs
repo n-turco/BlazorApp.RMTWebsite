@@ -6,7 +6,7 @@ namespace BlazorApp.RMTWebsite.Tests.Layout;
 /// <summary>
 /// Source checks on page markup (plans 2.5 and 2.8, the 2.8 "Done when"): spacing comes from CSS
 /// (PageHeader and each page's .razor.css), not from &lt;hr&gt; and &lt;br&gt; tags added for gaps.
-/// About and FAQ join this list in 2.6 and 2.7, when their bodies are rebuilt without line breaks.
+/// FAQ joined in 2.7; About joins in 2.6, when its bio is rebuilt without line breaks.
 /// </summary>
 public class PageMarkupTests
 {
@@ -15,6 +15,7 @@ public class PageMarkupTests
     [InlineData("Services.razor")]
     [InlineData("ContactUs.razor")]
     [InlineData("NotFound.razor")]
+    [InlineData("FAQ.razor")]
     public void PageRazor_Markup_HasNoHrOrBrTags(string pageFile)
     {
         // Arrange
