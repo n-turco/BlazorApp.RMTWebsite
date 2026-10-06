@@ -6,10 +6,10 @@
 @* Services page (plan 2.5): one card per treatment, built from IServiceCatalog (the same data as the
    Home preview). Each card describes the treatment, lists its lengths and prices, and has its own
    booking button. Adding a treatment to the catalog adds a card here with no markup changes. *@
-<div class="container">
-    @* Inside the container so the heading lines up with the cards' left edge at every width. *@
-    <PageHeader Title="Services and rates" Subtitle="Registered massage therapy in Guelph, Ontario" />
+@* PageHeader brings its own .container, so it lines up with the cards' container below. *@
+<PageHeader Title="Services and rates" Subtitle="Registered massage therapy in Guelph, Ontario" />
 
+<div class="container">
     @foreach (var (offering, index) in Catalog.GetAll().Select((offering, index) => (offering, index)))
     {
         // Ids from the position, so two cards never share one (aria-labelledby needs a unique target)

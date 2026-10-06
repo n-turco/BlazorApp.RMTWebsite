@@ -1,4 +1,4 @@
-﻿@page "/contact"
+@page "/contact"
 @using Models
 @inject IEmailSender emailSender
 @inject ILogger<ContactUs> Logger
@@ -8,11 +8,11 @@
 
 <PageTitle>Contact Us</PageTitle>
 
-<h1 class="text-center">Contact Us</h1>
-<hr />
-<br />
+@* Shared heading (plan 2.8). The form layout below is reworked in 3.1. *@
+<PageHeader Title="Contact us" Subtitle="Questions or appointment requests? Send a message below." />
 
-<div class="container w-75">
+@* A plain .container (no w-75) so the form's left edge lines up with the heading (plan 2.8). *@
+<div class="container">
     <!--NEED TO UPDATE TO A FORM TO COLLECT USER INFO-->
     <EditForm Model="Inquiry" OnValidSubmit="ValidSubmit" FormName="inquiryForm" Enhance>
         <DataAnnotationsValidator />
