@@ -1,116 +1,20 @@
-.page {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-/* column that holds the header, page content, and footer */
-.page-body {
-    flex: 1;
-    min-width: 0;
-}
-/*side bar background color*/
-.sidebar {
+/* Skip link (plan 2.3). Bootstrap's visually-hidden-focusable hides it until it receives keyboard
+   focus; then it appears over the top-left of the navbar, above the sticky header (z-index 1020). */
+.skip-link:focus {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 1030;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
     background-color: var(--brand-accent);
-  
+    color: var(--brand-dark);
+    font-weight: 600;
+    text-decoration: none;
 }
 
-.top-row {
-    background-color: var(--brand-dark);
-    border-bottom: 1px solid var(--brand-border);
-    justify-content: center;
-    /* min-height (not height) so the bar grows when the title wraps on narrow phones,
-       instead of the text spilling out over the page (plan 2.4). */
-    min-height: 3.6rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
+/* <main> only receives focus from the skip link (tabindex="-1"), so a focus ring there would
+   outline the whole page for no benefit. */
+main:focus {
+    outline: none;
 }
-
-/* Site name in the header. Uses the heading font so it still reads as the brand, and
-   clamp() scales it from phone (1.25rem, at most two lines at 320px) to desktop (2.25rem). */
-.site-title {
-    font-family: var(--font-heading);
-    font-size: clamp(1.25rem, 0.9rem + 1.8vw, 2.25rem);
-    font-weight: 500;
-    line-height: var(--lh-heading);
-    text-align: center;
-    margin: 0; /* <p> has a bottom margin by default, which would push the text off-centre */
-}
-
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
-        text-decoration: none;
-    }
-
-    .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-        text-decoration: underline;
-    }
-
-    .top-row ::deep a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-@media (max-width: 640.98px) {
-    .top-row {
-        justify-content: space-between;
-    }
-
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        margin-left: 0;
-    }
-}
-
-@media (min-width: 641px) {
-    .page {
-        flex-direction: row;
-    }
-
-    .sidebar {
-        width: 250px;
-        height: 100vh;
-        position: sticky;
-        top: 0;
-    }
-
-    .top-row {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-
-    .top-row.auth ::deep a:first-child {
-        flex: 1;
-        text-align: right;
-        width: 0;
-    }
-
-    .top-row, .content {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
-    }
-}
-
-#blazor-error-ui {
-    color-scheme: light only;
-    background: lightyellow;
-    bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    box-sizing: border-box;
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
-}
-
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }

@@ -27,6 +27,10 @@
 
 <body>
     <Routes />
+    @* Bootstrap's JavaScript (without Popper, which only dropdowns/tooltips need) powers the navbar's
+       collapse menu (plan 2.3) and later the FAQ accordion (2.7). Its data-bs-* listeners sit on
+       document, so they keep working after Blazor's enhanced navigation patches the page. *@
+    <script src="@Assets["lib/bootstrap/dist/js/bootstrap.min.js"]"></script>
     <script src="@Assets["_framework/blazor.web.js"]"></script>
     <script src="@Assets["js/form-submit.js"]"></script>
 </body>

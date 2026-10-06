@@ -1,102 +1,76 @@
-
-.navbar-toggler {
-    appearance: none;
-    cursor: pointer;
-    width: 3.5rem;
-    height: 2.5rem;
-    color: white;
-    position: absolute;
-    top: 0.5rem;
-    right: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem rgba(255, 255, 255, 0.1);
-}
-
-.navbar-toggler:checked {
-    background-color: rgba(56, 202, 255, 0.5);
-}
-
-.top-row {
-    min-height: 3.5rem;
+/* Top navbar (plan 2.3). Colours come only from the brand tokens in app.css; contrast on the
+   black bar: white 21:1, cyan accent 11.06:1, light border 14:1. Bootstrap's navbar reads the
+   --bs-navbar-* variables, so setting them here restyles its links and toggler. */
+.site-navbar {
+    --bs-navbar-color: var(--brand-light);
+    --bs-navbar-hover-color: var(--brand-accent);
+    --bs-navbar-active-color: var(--brand-accent);
+    --bs-navbar-toggler-border-color: var(--brand-border);
+    --bs-navbar-nav-link-padding-x: 0.75rem;
     background-color: var(--brand-dark);
+    border-bottom: 1px solid var(--brand-border);
 }
 
-.bi {
-    display: inline-block;
-    position: relative;
-    width: 1.25rem;
-    height: 1.25rem;
-    margin-right: 0.75rem;
-    top: -1px;
-    background-size: cover;
+/* NavLink is a component, so the <a> it renders doesn't get this file's scope attribute.
+   ::deep reaches it through .site-navbar (see Visual_dataflow_features/2.1-inline-styles.md). */
+.site-navbar ::deep .nav-link {
+    font-size: 1rem;
+    /* 0.625rem top and bottom plus a 24px line = 44px tall, a comfortable tap target on phones. */
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
 }
 
-.bi-house-door-fill-nav-menu {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='black' class='bi bi-house-door-fill' viewBox='0 0 16 16'%3E%3Cpath d='M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5Z'/%3E%3C/svg%3E");
+/* Current page: colour and an underline, so it doesn't rely on colour alone (WCAG 1.4.1).
+   NavLink also sets aria-current="page" for screen readers. */
+.site-navbar ::deep .nav-link.active {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.4em;
 }
 
-.bi-plus-square-fill-nav-menu {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='black' class='bi bi-plus-square-fill' viewBox='0 0 16 16'%3E%3Cpath d='M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z'/%3E%3C/svg%3E");
+/* Bootstrap's default focus glow is a faint blue that disappears on black; use a cyan outline. */
+.site-navbar ::deep .nav-link:focus-visible,
+.navbar-toggler:focus-visible,
+.book-button:focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 2px;
+    box-shadow: none;
 }
 
-.bi-list-nested-nav-menu {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='black' class='bi bi-list-nested' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4.5 11.5A.5.5 0 0 1 5 11h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 1 3h10a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5z'/%3E%3C/svg%3E");
+/* Bootstrap gives the toggler a thick glow on any :focus, including after a mouse tap. Keyboard
+   users get the cyan :focus-visible outline above instead. */
+.navbar-toggler:focus {
+    box-shadow: none;
 }
 
-.nav-item {
-    font-size: 0.9rem;
-    padding-bottom: 0.5rem;
+/* The hamburger icon is drawn by Bootstrap; this makes it white for the dark bar. The colour sits
+   inside an SVG data URI because Bootstrap draws the icon as a background image. */
+.navbar-toggler-icon {
+    --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-    .nav-item:first-of-type {
-        padding-top: 1rem;
-    }
-
-    .nav-item:last-of-type {
-        padding-bottom: 1rem;
-    }
-
-    .nav-item ::deep .nav-link {
-        color: var(--brand-dark);
-        background: none;
-        border: none;
-        border-radius: 4px;
-        height: 3rem;
-        display: flex;
-        align-items: center;
-        line-height: 3rem;
-        width: 100%;
-    }
-
-.nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.37);
-    color: var(--brand-dark);
-}
-
-.nav-item ::deep .nav-link:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: var(--brand-dark);
-}
-
-.nav-scrollable {
-    display: none;
-}
-
-.navbar-toggler:checked ~ .nav-scrollable {
+/* Book now: the brightest thing on the bar (black on cyan, 11.06:1). Full width at the bottom of
+   the open phone menu; a normal button beside the links on desktop. */
+.book-button {
+    --bs-btn-color: var(--brand-dark);
+    --bs-btn-bg: var(--brand-accent);
+    --bs-btn-border-color: var(--brand-accent);
+    --bs-btn-hover-color: var(--brand-dark);
+    --bs-btn-hover-bg: var(--brand-light);
+    --bs-btn-hover-border-color: var(--brand-light);
+    --bs-btn-active-color: var(--brand-dark);
+    --bs-btn-active-bg: var(--brand-light);
+    --bs-btn-active-border-color: var(--brand-light);
     display: block;
+    width: 100%;
+    margin: 0.5rem 0 1rem;
+    font-weight: 600;
 }
 
-@media (min-width: 641px) {
-    .navbar-toggler {
-        display: none;
-    }
-
-    .nav-scrollable {
-        /* Never collapse the sidebar for wide screens */
-        display: block;
-
-        /* Allow sidebar to scroll for tall menus */
-        height: calc(100vh - 3.5rem);
-        overflow-y: auto;
+@media (min-width: 992px) {
+    .book-button {
+        display: inline-block;
+        width: auto;
+        margin: 0 0 0 0.75rem;
     }
 }
