@@ -137,6 +137,21 @@ html {
     padding-top: 1.1rem;
 }
 
+/* Full-bleed bands (Home hero and services band, closing call to action on Home and Services) run
+   edge to edge by cancelling <main>'s side padding: px-3 = 1rem, and px-lg-4 = 1.5rem from 992px.
+   Site-wide (moved from Home.razor.css in 2.5) because more than one page uses it. */
+.full-bleed {
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
+@media (min-width: 992px) {
+    .full-bleed {
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+    }
+}
+
 h1:focus {
     outline: none;
 }

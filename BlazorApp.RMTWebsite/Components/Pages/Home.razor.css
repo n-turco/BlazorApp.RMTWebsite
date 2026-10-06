@@ -1,10 +1,3 @@
-/* Full-bleed bands (hero, services band, closing call to action) run edge to edge by cancelling
-   <main>'s side padding: px-3 = 1rem, and px-lg-4 = 1.5rem from 992px. */
-.full-bleed {
-    margin-left: -1rem;
-    margin-right: -1rem;
-}
-
 /* Hero (plan 2.2): photo, dark overlay, then text, stacked with z-index.
    min-height (not height) so the box grows if the text needs more room, e.g. a long headline
    on a 320px phone or at 200% zoom, instead of clipping it. */
@@ -129,11 +122,6 @@
 }
 
 @media (min-width: 992px) {
-    .full-bleed {
-        margin-left: -1.5rem;
-        margin-right: -1.5rem;
-    }
-
     .hero {
         min-height: 70vh;
     }

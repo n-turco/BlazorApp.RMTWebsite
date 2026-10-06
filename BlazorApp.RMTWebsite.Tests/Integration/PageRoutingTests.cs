@@ -16,7 +16,7 @@ public class PageRoutingTests(SiteFactory factory) : IClassFixture<SiteFactory>
     // Every page in the nav loads and sets its own <title> (shown in the browser tab and search results)
     [Theory]
     [InlineData("/", "Home")]
-    [InlineData("/services", "Services")]
+    [InlineData("/services", "Services and rates")]
     [InlineData("/about", "About Me")]
     [InlineData("/contact", "Contact Us")]
     [InlineData("/faq", "FAQ")]

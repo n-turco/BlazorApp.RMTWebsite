@@ -1,34 +1,82 @@
-﻿@page "/services"
+@page "/services"
 @using BlazorApp.RMTWebsite.Services
 @inject IServiceCatalog Catalog
-<PageTitle>Services</PageTitle>
-<h1>Services</h1>
+<PageTitle>Services and rates</PageTitle>
 
-<hr/>
-<br/>
-<!--NEED TO ADD A BUTTON TO EACH OPTION FOR BOOKING-->
+@* Services page (plan 2.5): one card per treatment, built from IServiceCatalog (the same data as the
+   Home preview). Each card describes the treatment, lists its lengths and prices, and has its own
+   booking button. Adding a treatment to the catalog adds a card here with no markup changes. *@
 <div class="container">
-<table class="table">
-    <thead>
-        <tr>
-            <th>Treatment Type</th>
-            <th>Treatment Length</th>
-            <th>Treatment Cost</th>
-        </tr>
-    </thead>
-    <tbody>
-        @* Rows come from IServiceCatalog (plan 2.2), the same source as the Home page's "from" price. *@
-        @foreach (var offering in Catalog.GetAll())
-        {
-            foreach (var option in offering.Options)
-            {
-                <tr>
-                    <td>@offering.Name</td>
-                    <td>@option.Minutes minute Massage</td>
-                    <td>@option.FormattedPrice</td>
-                </tr>
-            }
-        }
-    </tbody>
-</table>
+    @* Inside the container so the heading lines up with the cards' left edge at every width. *@
+    <PageHeader Title="Services and rates" Subtitle="Registered massage therapy in Guelph, Ontario" />
+
+    @foreach (var (offering, index) in Catalog.GetAll().Select((offering, index) => (offering, index)))
+    {
+        // Ids from the position, so two cards never share one (aria-labelledby needs a unique target)
+        var headingId = $"service-{index}-heading";
+
+        @* <article>: each card makes sense on its own. aria-labelledby names it by its h2, so screen
+           readers announce "Swedish Massage, article". *@
+        <article class="service-detail" aria-labelledby="@headingId">
+            @* Stacked on phones; from 768px (md) the description sits left and the prices right. *@
+            <div class="row g-4">
+                <div class="col-md-7">
+                    <h2 id="@headingId">@offering.Name</h2>
+                    <p>@offering.Description</p>
+
+                    <h3 class="h5">Helps with</h3>
+                    <ul class="mb-0">
+                        @foreach (var item in offering.HelpsWith)
+                        {
+                            <li>@item</li>
+                        }
+                    </ul>
+                </div>
+
+                <div class="col-md-5">
+                    @* A table because each length is paired with a price. The caption names the table for
+                       screen readers (hidden on screen, where the card's h2 already says it), and
+                       th scope="row" makes each row read as "30 minutes, $90.00". *@
+                    <div class="table-responsive">
+                        <table class="table price-table">
+                            <caption class="visually-hidden">@offering.Name prices</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Length</th>
+                                    <th scope="col" class="text-end">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var option in offering.Options)
+                                {
+                                    <tr>
+                                        <th scope="row">@option.Minutes minutes</th>
+                                        <td class="text-end">@option.FormattedPrice</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @* btn-primary, not the cyan accent: on a white card the accent's edge is only about 1.9:1
+                       (WCAG 1.4.11 needs 3:1), while brand blue on white is 5.56:1. aria-describedby adds the
+                       treatment name, so "Book this treatment" stays clear if more cards are added.
+                       Goes to the contact form until online booking exists (plan 4.1). *@
+                    <a class="btn btn-primary" href="contact" aria-describedby="@headingId">Book this treatment</a>
+                </div>
+            </div>
+        </article>
+    }
+
+    @* Confirmed 2026-10-06. Policies and billing in detail belong on their own page (plan 4.2). *@
+    <p class="pricing-note">
+        Prices are plus HST. Official receipts are provided for extended health insurance claims.
+    </p>
+</div>
+
+@* Shared closing call to action (from 2.2), here for visitors who aren't sure which length to book. *@
+<div class="full-bleed">
+    <CallToAction Heading="Not sure which length?"
+                  Text="Send a message and Nick will help you choose the right appointment for you."
+                  ButtonText="Contact Nick" />
 </div>

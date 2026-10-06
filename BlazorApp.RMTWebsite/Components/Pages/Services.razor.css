@@ -1,0 +1,20 @@
+/* Services page (plan 2.5). Spacing lives here and in PageHeader, not in <hr>/<br> tags. */
+
+/* One card per treatment: white with a light border, matching the Home page cards. */
+.service-detail {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--brand-border);
+    border-radius: 0.5rem;
+    background-color: var(--brand-light);
+}
+
+/* Prices read as figures, so they use the heading font like the Home page's "from $90.00". */
+.price-table td {
+    font-family: var(--font-heading);
+}
+
+/* Space before the closing call to action band. */
+.pricing-note {
+    margin-bottom: 3rem;
+}

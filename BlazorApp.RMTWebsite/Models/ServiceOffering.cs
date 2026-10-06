@@ -20,10 +20,19 @@ public record ServiceOption(int Minutes, decimal Price)
     public string FormattedPrice => FormatPrice(Price);
 }
 
-/// <summary>A treatment the clinic offers and its bookable lengths and prices (plan 2.2).</summary>
+/// <summary>
+/// A treatment the clinic offers: what it is, who it helps, and its bookable lengths and prices
+/// (plan 2.2; description and "helps with" added for the Services cards in 2.5).
+/// </summary>
 /// <param name="Name">Treatment name, e.g. "Swedish Massage".</param>
+/// <param name="Description">Two or three sentences describing the treatment, shown on its Services card.</param>
+/// <param name="HelpsWith">Short points on who or what it helps, shown as a bulleted list.</param>
 /// <param name="Options">Each length and its price.</param>
-public record ServiceOffering(string Name, IReadOnlyList<ServiceOption> Options)
+public record ServiceOffering(
+    string Name,
+    string Description,
+    IReadOnlyList<string> HelpsWith,
+    IReadOnlyList<ServiceOption> Options)
 {
     /// <summary>The lowest price, shown as "from $X" on the Home page.</summary>
     public decimal StartingPrice => Options.Min(option => option.Price);
