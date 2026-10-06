@@ -1,0 +1,35 @@
+@* Reusable closing call to action (plan 2.2; the first shared component from 2.8): a heading, an
+   optional line of text, and one accent button, on a black band. Any page can end with:
+       <CallToAction Heading="Ready to book?" Text="..." />
+   The section is named by its own h2 (aria-labelledby), so it shows up in screen-reader landmark lists. *@
+<section class="cta" aria-labelledby="@headingId">
+    <div class="cta-inner">
+        <h2 id="@headingId" class="cta-heading">@Heading</h2>
+        @if (!string.IsNullOrWhiteSpace(Text))
+        {
+            <p class="cta-text">@Text</p>
+        }
+        <a class="btn btn-lg btn-accent" href="@Href">@ButtonText</a>
+    </div>
+</section>
+
+@code {
+    /// <summary>The section heading, e.g. "Ready to book?". Required.</summary>
+    [Parameter, EditorRequired]
+    public string Heading { get; set; } = string.Empty;
+
+    /// <summary>Optional supporting line under the heading.</summary>
+    [Parameter]
+    public string? Text { get; set; }
+
+    /// <summary>Button label. Defaults to the site's booking wording.</summary>
+    [Parameter]
+    public string ButtonText { get; set; } = "Book an appointment";
+
+    /// <summary>Button target. Defaults to the contact form until online booking exists (plan 4.1).</summary>
+    [Parameter]
+    public string Href { get; set; } = "contact";
+
+    // Unique per instance, so two calls to action on one page never share an id
+    private readonly string headingId = $"cta-heading-{Guid.NewGuid():N}";
+}

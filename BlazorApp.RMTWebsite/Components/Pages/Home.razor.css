@@ -1,3 +1,10 @@
+/* Full-bleed bands (hero, services band, closing call to action) run edge to edge by cancelling
+   <main>'s side padding: px-3 = 1rem, and px-lg-4 = 1.5rem from 992px. */
+.full-bleed {
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
 /* Hero (plan 2.2): photo, dark overlay, then text, stacked with z-index.
    min-height (not height) so the box grows if the text needs more room, e.g. a long headline
    on a 320px phone or at 200% zoom, instead of clipping it. */
@@ -7,9 +14,7 @@
     align-items: center;
     min-height: 60vh;
     overflow: hidden;
-    /* Full-bleed: cancel <main>'s padding (px-3 = 1rem sides, .content = 1.1rem top in app.css)
-       so the photo runs edge to edge under the navbar. */
-    margin: -1.1rem -1rem 0;
+    margin-top: -1.1rem; /* cancel <main>'s top padding (.content in app.css) so it sits under the navbar */
     background-color: var(--brand-dark); /* shown while the photo loads, keeps white text readable */
 }
 
@@ -72,10 +77,65 @@
     }
 }
 
+/* ---- Sections below the hero (plan 2.2, PR 2) ---- */
+
+.home-section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Light band behind the services preview, to separate it from the white sections around it. */
+.muted-band {
+    background-color: var(--surface-muted);
+}
+
+/* Equal-height cards (h-100 behaviour) with a light border. */
+.why-card,
+.service-card {
+    height: 100%;
+    padding: 1.5rem;
+    border: 1px solid var(--brand-border);
+    border-radius: 0.5rem;
+    background-color: var(--brand-light);
+}
+
+.why-icon {
+    display: block;
+    font-size: 2rem;
+    color: var(--brand-primary);
+    margin-bottom: 0.75rem;
+}
+
+.service-card {
+    text-align: center;
+}
+
+.service-price {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    margin-bottom: 0;
+}
+
+/* Scales down on narrow phones; width/height attributes keep its shape and reserve its space. */
+.meet-photo {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+}
+
 @media (min-width: 992px) {
+    .full-bleed {
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+    }
+
     .hero {
         min-height: 70vh;
-        margin: -1.1rem -1.5rem 0; /* main uses px-lg-4 (1.5rem) from 992px */
     }
 
     .hero-content {

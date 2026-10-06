@@ -1,10 +1,12 @@
-@page "/"
+﻿@page "/"
+@using BlazorApp.RMTWebsite.Services
+@inject IServiceCatalog Catalog
 
 <PageTitle>Home</PageTitle>
 
 @* Hero (plan 2.2): answers "what", "where", and "how to book" on the first screen.
    aria-labelledby names the section after its headline for screen-reader landmark lists. *@
-<section class="hero" aria-labelledby="hero-heading">
+<section class="hero full-bleed" aria-labelledby="hero-heading">
     @* Decorative photo (alt="": the headline carries the meaning). It's an <img>, not a CSS
        background, so the browser finds it in the HTML straight away; fetchpriority="high" because
        it's the largest thing on the first screen (Largest Contentful Paint). width/height reserve
@@ -24,3 +26,82 @@
         </div>
     </div>
 </section>
+
+@* Why choose us (plan 2.2). Copy drawn from the About and FAQ pages; nothing new is claimed.
+   Icons are decorative (aria-hidden): each card's h3 already says what it means. *@
+<section class="home-section" aria-labelledby="why-heading">
+    <div class="container">
+        <h2 id="why-heading" class="section-heading">Why choose Kinetic Flow</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="why-card">
+                    <i class="bi bi-clipboard2-pulse why-icon" aria-hidden="true"></i>
+                    <h3 class="h4">Clinical, evidence-based care</h3>
+                    <p class="mb-0">Massage therapy as a healthcare option: hands-on treatment of muscles, tendons, and joints to relieve pain and restore function.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="why-card">
+                    <i class="bi bi-activity why-icon" aria-hidden="true"></i>
+                    <h3 class="h4">Sports and rehab background</h3>
+                    <p class="mb-0">A sports and fitness background and deeper-tissue techniques for rehabilitating chronic injuries.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="why-card">
+                    <i class="bi bi-person-check why-icon" aria-hidden="true"></i>
+                    <h3 class="h4">A plan built for you</h3>
+                    <p class="mb-0">Every visit starts with your health history and goals, with stretches and exercises to keep progress going between sessions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* Services preview. Name, length range, and "from" price all come from IServiceCatalog, the same
+   source as the Services page table, so the two can never show different prices. *@
+<section class="home-section muted-band full-bleed" aria-labelledby="services-heading">
+    <div class="container">
+        <h2 id="services-heading" class="section-heading">Services and rates</h2>
+        <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+            @foreach (var offering in Catalog.GetAll())
+            {
+                <div class="col">
+                    <div class="service-card">
+                        <h3 class="h4">@offering.Name</h3>
+                        <p class="mb-1">@offering.MinMinutes to @offering.MaxMinutes minutes</p>
+                        <p class="service-price">from @offering.FormattedStartingPrice</p>
+                    </div>
+                </div>
+            }
+        </div>
+        <p class="text-center mt-4 mb-0">
+            <a class="btn btn-primary" href="services">See all rates <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
+        </p>
+    </div>
+</section>
+
+@* Meet Nick: short teaser for the About page. Nick's own photo (confirmed 2026-10-05).
+   loading="lazy": it's below the first screen, so the browser fetches it only as the visitor
+   scrolls near it (the opposite of the hero's fetchpriority="high"). *@
+<section class="home-section" aria-labelledby="meet-heading">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-md-auto text-center">
+                <img class="meet-photo" src="@Assets["profilePic.jpg"]" alt="Nicholas Turco, RMT"
+                     width="220" height="327" loading="lazy" />
+            </div>
+            <div class="col">
+                <h2 id="meet-heading" class="section-heading text-md-start">Meet Nick</h2>
+                <p>Nick completed an advanced diploma in Massage Therapy in 2014 and also holds a diploma in fitness and health promotion. His treatment focuses on deeper-tissue work and helping you understand your body.</p>
+                <a class="btn btn-outline-primary" href="about">Meet Nick <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* Closing call to action (shared component, reused by later pages). *@
+<div class="full-bleed">
+    <CallToAction Heading="Ready to book?"
+                  Text="Appointments in Guelph, Ontario. Send a message and Nick will get back to you." />
+</div>
