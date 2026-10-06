@@ -14,7 +14,14 @@
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["BlazorApp.RMTWebsite.styles.css"]" />
     <ImportMap />
-    <link rel="icon" type="image/png" href="favicon.png" />
+    @* KF monogram favicon set (plan 2.1). favicon.ico stays at a plain root URL because some clients
+       request /favicon.ico directly; the others use @Assets so a changed icon gets a new URL and
+       browsers don't keep showing a cached old one. *@
+    <link rel="icon" href="favicon.ico" sizes="32x32" />
+    <link rel="icon" href="@Assets["favicon.svg"]" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="@Assets["apple-touch-icon.png"]" />
+    @* Colours the phone browser's address bar to match the black header. *@
+    <meta name="theme-color" content="#000000" />
     <HeadOutlet />
 </head>
 

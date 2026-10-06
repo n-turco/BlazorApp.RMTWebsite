@@ -21,11 +21,6 @@
     background-color: var(--brand-dark);
 }
 
-.navbar-brand {
-    font-size: 1.3rem;
-    color: var(--brand-light);
-}
-
 .bi {
     display: inline-block;
     position: relative;

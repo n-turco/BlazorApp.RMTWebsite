@@ -1,0 +1,9 @@
+@* The site's brand: KF monogram plus the business name, linking home (plan 2.1).
+   Its own component so task 2.3 can move it into the new top navbar with one tag. *@
+<a class="navbar-brand brand-logo" href="">
+    @* alt="" because the mark is decorative: the text beside it already names the link, so a
+       screen reader says "Kinetic Flow RMT, link" once instead of twice. width/height reserve
+       the space so the layout doesn't jump while the image loads. *@
+    <img class="brand-mark" src="@Assets["favicon.svg"]" alt="" width="32" height="32" />
+    <span>Kinetic Flow RMT</span>
+</a>

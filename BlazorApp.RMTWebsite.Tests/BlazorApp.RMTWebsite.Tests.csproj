@@ -15,10 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Copy the site's stylesheet, fonts and .razor markup into the test output (under SiteFiles/)
-         so FontAssetTests and HeadingStructureTests can read them without fragile ../../.. paths.
-         Link sets the output path. -->
+    <!-- Copy the site's stylesheet, icons, fonts and .razor markup into the test output (under SiteFiles/)
+         so the source-file tests (FontAssetTests, IconAssetTests, HeadingStructureTests, ...) can read
+         them without fragile ../../.. paths. Link sets the output path. -->
     <Content Include="..\BlazorApp.RMTWebsite\wwwroot\app.css" Link="SiteFiles\wwwroot\app.css" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <Content Include="..\BlazorApp.RMTWebsite\wwwroot\favicon.*;..\BlazorApp.RMTWebsite\wwwroot\apple-touch-icon.png" Link="SiteFiles\wwwroot\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     <Content Include="..\BlazorApp.RMTWebsite\wwwroot\fonts\**" Link="SiteFiles\wwwroot\fonts\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     <Content Include="..\BlazorApp.RMTWebsite\Components\**\*.razor" Link="SiteFiles\Components\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
   </ItemGroup>
