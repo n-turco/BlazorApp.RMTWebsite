@@ -28,15 +28,26 @@ public class FaqPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
             .Select(m => new Question(m.Groups[1].Value, Text(m.Groups[2].Value), m.Groups[3].Value))
             .ToList();
 
+    /// <summary>The text of each &lt;p&gt; in an answer, in order. Blazor renders consecutive paragraphs with no
+    /// whitespace between them, so stripping tags from the whole answer would glue sentences together.</summary>
+    private static List<string> GetParagraphs(string answerMarkup) =>
+        Regex.Matches(answerMarkup, @"<p\b[^>]*>(.*?)</p>", RegexOptions.Singleline)
+            .Select(m => Text(m.Groups[1].Value))
+            .ToList();
+
+    /// <summary>Opening tag of the CallToAction section. "cta" must be a whole class name, so "cta-band" doesn't match.</summary>
+    private const string CtaSectionTag = @"<section\b[^>]*\bclass=""(?:[^""]*\s)?cta(?:\s[^""]*)?""[^>]*>";
+
     /// <summary>The page's content between the PageHeader and the closing call to action.</summary>
     private static string GetFaqBody(string html)
     {
         var start = html.IndexOf("</header>", html.IndexOf("page-header", StringComparison.Ordinal), StringComparison.Ordinal);
-        var end = Regex.Match(html, @"<section\b[^>]*\bclass=""[^""]*\bcta\b").Index;
+        var end = Regex.Match(html, CtaSectionTag).Index;
         return start >= 0 && end > start ? html[start..end] : "";
     }
 
-    // The roadmap asks for at least eight; each one has a question and at least one answer paragraph
+    // The roadmap asks for at least eight; each one has a question and at least one answer paragraph,
+    // and every paragraph has text in it (an empty <p></p> must fail)
     [Fact]
     public async Task Get_Faq_HasAtLeastEightQuestions()
     {
@@ -48,7 +59,9 @@ public class FaqPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
         Assert.All(questions, question =>
         {
             Assert.NotEmpty(question.Text);
-            Assert.Matches(@"<p\b[^>]*>\s*\S", question.AnswerMarkup);
+            var paragraphs = GetParagraphs(question.AnswerMarkup);
+            Assert.NotEmpty(paragraphs);
+            Assert.All(paragraphs, paragraph => Assert.NotEmpty(paragraph));
         });
     }
 
@@ -57,10 +70,13 @@ public class FaqPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
     public async Task Get_Faq_QuestionsAreCollapsedByDefault()
     {
         // Arrange & Act
-        var questions = GetQuestions(await GetFaqAsync());
+        var html = await GetFaqAsync();
+        var questions = GetQuestions(html);
 
-        // Assert (NotEmpty first: with no questions, "none are open" would pass without checking anything)
+        // Assert (NotEmpty first: with no questions, "none are open" would pass without checking anything;
+        // the count check makes sure no <details> was skipped by the parser and left unchecked)
         Assert.NotEmpty(questions);
+        Assert.Equal(Regex.Matches(html, @"<details\b").Count, questions.Count);
         Assert.All(questions, question => Assert.DoesNotMatch(@"(?<![\w-])open(?![\w-])", question.Attributes));
     }
 
@@ -112,8 +128,23 @@ public class FaqPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
         Assert.DoesNotMatch(@"<h[3-6]\b", body);
     }
 
-    // New answers, approved or built only from confirmed facts (plan 2.7, Decisions, 2026-10-06)
+    // Every answer, word for word: approved copy or built only from confirmed facts (plan 2.7, Decisions,
+    // 2026-10-06). Multi-paragraph answers are compared with their paragraphs joined by a space
     [Theory]
+    [InlineData("What is massage therapy?",
+        "Massage therapy is a clinically oriented healthcare option that involves the hands-on manipulation of the " +
+        "body's soft tissues, including muscles, connective tissue, tendons, ligaments, and joints. It's an " +
+        "evidence-based practice used to develop, maintain, or rehabilitate physical function, and to relieve pain " +
+        "and manage stress.")]
+    [InlineData("How will massage therapy benefit me?",
+        "Registered massage therapy can relieve muscle tension and pain, increase your range of motion, and lower " +
+        "your stress levels. Treatments are tailored to your needs. Your RMT will read over your health history and " +
+        "discuss your concerns before your treatment begins.")]
+    [InlineData("This is my first massage. What should I expect?",
+        "Your RMT will start with a brief conversation about your health and wellness, and may do a few short " +
+        "assessments of the area of concern to plan your treatment. During your treatment, the areas you've asked " +
+        "about are worked on, and your RMT will check throughout that you're comfortable and that the pressure suits " +
+        "you. Afterwards, your RMT will usually discuss their findings and suggest stretches or exercises that may help.")]
     [InlineData("What should I wear?",
         "Wear whatever is comfortable. For most treatments you'll undress to your comfort level and be covered by a sheet " +
         "the whole time, with only the area being treated uncovered. You can also stay fully or partly clothed, and Nick " +
@@ -140,7 +171,7 @@ public class FaqPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
 
         // Assert
         Assert.NotNull(match);
-        Assert.Equal(expectedAnswer, Text(match.AnswerMarkup));
+        Assert.Equal(expectedAnswer, string.Join(" ", GetParagraphs(match.AnswerMarkup)));
     }
 
     // Answers are paragraphs that reflow at any width. A <br> chops sentences mid-line on phones
@@ -162,13 +193,13 @@ public class FaqPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
         // Arrange & Act
         var html = await GetFaqAsync();
         var lastQuestionEnd = html.LastIndexOf("</details>", StringComparison.Ordinal);
-        var cta = Regex.Match(html, @"<section\b[^>]*\bclass=""[^""]*\bcta\b[^""]*""[^>]*>.*?</section>", RegexOptions.Singleline);
+        var cta = Regex.Match(html, CtaSectionTag + ".*?</section>", RegexOptions.Singleline);
 
         // Assert
         Assert.True(lastQuestionEnd >= 0, "No questions found.");
         Assert.True(cta.Success, "No CallToAction section found.");
         Assert.True(cta.Index > lastQuestionEnd, "CallToAction should come after the questions.");
         Assert.Matches(@"<h2\b[^>]*>\s*Still have questions\?\s*</h2>", cta.Value);
-        Assert.Matches(@"<a\b[^>]*\bhref=""contact""", cta.Value);
+        Assert.Matches(@"<a\b[^>]*\bhref=""contact""[^>]*>\s*Contact Nick\s*</a>", cta.Value);
     }
 }

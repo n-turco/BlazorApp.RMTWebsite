@@ -6,7 +6,7 @@
 
 @* FAQ (plan 2.7): questions in groups, each a native <details>/<summary>. The browser handles opening and
    closing with no JavaScript, Tab and Enter/Space work out of the box, screen readers announce
-   "collapsed/expanded", and Ctrl+F opens the answer it finds. All questions start closed so the page
+   "collapsed/expanded", and in Chrome/Edge Ctrl+F opens the answer it finds. All questions start closed so the page
    scans as a list. The content lives in the Groups data below; to add a question, add a line there. *@
 <div class="container faq">
     @foreach (var (group, index) in Groups.Select((group, index) => (group, index)))
@@ -52,7 +52,8 @@
     private sealed record FaqItem(string Question, IReadOnlyList<string> Answer);
 
     // Agreed 2026-10-06 (docs/plans/2.7-faq-accordion.md, Decisions). FaqPageTests pins the question list
-    // and the new answers word for word, because they're promises to clients (billing, payment, cancellations).
+    // and every answer word for word: some are promises to clients (billing, payment, cancellations) and
+    // all are health-advertising copy, so any wording change should be deliberate.
     // Parking and accessibility is added with the location details in plan 3.2. In 4.3 this moves to configuration.
     private static readonly IReadOnlyList<FaqGroup> Groups =
     [
@@ -68,7 +69,7 @@
             new("How will massage therapy benefit me?",
             [
                 "Registered massage therapy can relieve muscle tension and pain, increase your range of motion, and " +
-                "lower your stress levels. It can deliver both physical and emotional benefits.",
+                "lower your stress levels.",
                 "Treatments are tailored to your needs. Your RMT will read over your health history and discuss your " +
                 "concerns before your treatment begins.",
             ]),
@@ -83,8 +84,10 @@
         [
             new("This is my first massage. What should I expect?",
             [
+                // "Assessments of the area of concern", not "find the type of injury": communicating a
+                // diagnosis is a controlled act RMTs aren't authorized to perform in Ontario (review, 2026-10-06)
                 "Your RMT will start with a brief conversation about your health and wellness, and may do a few short " +
-                "assessments to find the location and type of injury or condition you're experiencing.",
+                "assessments of the area of concern to plan your treatment.",
                 "During your treatment, the areas you've asked about are worked on, and your RMT will check throughout " +
                 "that you're comfortable and that the pressure suits you.",
                 "Afterwards, your RMT will usually discuss their findings and suggest stretches or exercises that may help.",
