@@ -11,6 +11,10 @@
        becomes #666, and white text on that is 5.74:1 (WCAG AA needs 4.5:1). */
     --hero-overlay: rgb(0 0 0 / 0.6);
 
+    /* Light background for alternating Home sections (plan 2.2). Body text #212529 on it is 14.2:1;
+       links (--brand-primary) on it are 5.1:1. */
+    --surface-muted: #f4f6f7;
+
     --bs-primary: var(--brand-primary);
     --bs-primary-rgb: 0, 112, 153;
     --bs-link-color: var(--brand-primary);
@@ -104,6 +108,19 @@ a, .btn-link {
     --bs-btn-active-border-color: var(--brand-primary-hover);
     --bs-btn-disabled-bg: var(--brand-primary);
     --bs-btn-disabled-border-color: var(--brand-primary);
+}
+
+/* Outline variant in the brand blue (Bootstrap's default is #0d6efd). Text #007099 on white is 5.56:1;
+   on hover it fills, giving white on #007099 (5.56:1). */
+.btn-outline-primary {
+    --bs-btn-color: var(--brand-primary);
+    --bs-btn-border-color: var(--brand-primary);
+    --bs-btn-hover-color: var(--brand-light);
+    --bs-btn-hover-bg: var(--brand-primary);
+    --bs-btn-hover-border-color: var(--brand-primary);
+    --bs-btn-active-color: var(--brand-light);
+    --bs-btn-active-bg: var(--brand-primary-hover);
+    --bs-btn-active-border-color: var(--brand-primary-hover);
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {

@@ -1,4 +1,6 @@
 ﻿@page "/services"
+@using BlazorApp.RMTWebsite.Services
+@inject IServiceCatalog Catalog
 <PageTitle>Services</PageTitle>
 <h1>Services</h1>
 
@@ -15,31 +17,18 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>Swedish Massage</td>
-            <td>30 minute Massage</td>
-            <td>$90.00</td>
-        </tr>
-    <tr>
-        <td>Swedish Massage</td>
-        <td>45 minute Massage</td>
-        <td>$110.00</td>
-    </tr>
-    <tr>
-        <td>Swedish Massage</td>
-        <td>60 minute Massage</td>
-        <td>$130.00</td>
-    </tr>
-    <tr>
-        <td>Swedish Massage</td>
-        <td>75 minute Massage</td>
-        <td>$145.00</td>
-    </tr>
-    <tr>
-        <td>Swedish Massage</td>
-        <td>90 minute Massage</td>
-        <td>$160.00</td>
-    </tr>
+        @* Rows come from IServiceCatalog (plan 2.2), the same source as the Home page's "from" price. *@
+        @foreach (var offering in Catalog.GetAll())
+        {
+            foreach (var option in offering.Options)
+            {
+                <tr>
+                    <td>@offering.Name</td>
+                    <td>@option.Minutes minute Massage</td>
+                    <td>@option.FormattedPrice</td>
+                </tr>
+            }
+        }
     </tbody>
 </table>
 </div>

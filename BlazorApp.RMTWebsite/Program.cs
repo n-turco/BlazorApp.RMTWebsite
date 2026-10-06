@@ -1,4 +1,4 @@
-using BlazorApp.RMTWebsite.Components;
+﻿using BlazorApp.RMTWebsite.Components;
 using BlazorApp.RMTWebsite.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
@@ -14,6 +14,8 @@ namespace BlazorApp.RMTWebsite
             builder.Services.AddRazorComponents();
             //  builder.Services.AddRazorComponents().AddInteractiveServerComponents();
             builder.Services.AddHttpClient<IEmailSender, EmailSenderService>();
+            // Treatments and prices, shared by the Home preview and the Services page (plan 2.2)
+            builder.Services.AddSingleton<IServiceCatalog, ServiceCatalog>();
 
             var app = builder.Build();
 

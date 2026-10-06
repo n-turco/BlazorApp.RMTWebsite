@@ -1,0 +1,30 @@
+/* Black band, white text (21:1), shared cyan .btn-accent button (11.06:1). The footer's light top
+   border keeps it visually separate when it's the last thing on a page. */
+.cta {
+    background-color: var(--brand-dark);
+    color: var(--brand-light);
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+/* Keep the text a comfortable reading width, centred. */
+.cta-inner {
+    max-width: 40rem;
+    margin: 0 auto;
+}
+
+.cta-heading {
+    margin-bottom: 0.75rem;
+}
+
+.cta-text {
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Bootstrap's default focus glow disappears on black; use the site's cyan outline. */
+.cta .btn:focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 3px;
+    box-shadow: none;
+}
