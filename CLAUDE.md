@@ -36,6 +36,9 @@ BlazorApp.RMTWebsite/
   wwwroot/                   static assets; app.css holds site-wide styles
 BlazorApp.RMTWebsite.Tests/  xUnit v3 tests; folders mirror the app (Models/, Services/)
   Fakes/                     test doubles, e.g. FakeHttpMessageHandler (replaces the network)
+  Helpers/                   shared test helpers, e.g. RazorSource (reads .razor files for source tests)
+  Integration/               whole-site tests via WebApplicationFactory (SiteFactory, fake IEmailSender)
+  Layout/                    source-file checks on markup (headings, inline styles, nav, icons)
 global.json                  opts dotnet test into Microsoft.Testing.Platform (required by xUnit v3)
 docs/
   decisions/                 architecture decision records (ADRs)
