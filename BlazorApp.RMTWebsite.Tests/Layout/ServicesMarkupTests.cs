@@ -11,7 +11,7 @@ public class ServicesMarkupTests
 {
     // <hr> means "change of topic" and <br> means "line break in text"; neither is a spacing tool
     [Fact]
-    public void ServicesRazor_HasNoHrOrBrSpacing()
+    public void ServicesRazor_Markup_HasNoHrOrBrTags()
     {
         // Arrange
         var markup = RazorSource.ReadWithoutComments("Pages/Services.razor");

@@ -29,9 +29,13 @@ public class ServicesPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
             .Select(m => m.Value)
             .ToList();
 
-    /// <summary>Strips tags and decodes entities, e.g. "&lt;td&gt;$90.00&lt;/td&gt;" becomes "$90.00".</summary>
+    /// <summary>
+    /// Strips tags, decodes entities, and collapses runs of whitespace to one space, e.g.
+    /// "&lt;td&gt;$90.00&lt;/td&gt;" becomes "$90.00". Collapsing means re-wrapping a sentence across
+    /// lines in the .razor source doesn't break a test; the browser shows it the same either way.
+    /// </summary>
     private static string Text(string markup) =>
-        WebUtility.HtmlDecode(Regex.Replace(markup, "<[^>]+>", "")).Trim();
+        Regex.Replace(WebUtility.HtmlDecode(Regex.Replace(markup, "<[^>]+>", "")), @"\s+", " ").Trim();
 
     // PageHeader renders the page's only <h1> and the subtitle together in one header block
     [Fact]
@@ -50,12 +54,13 @@ public class ServicesPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
     }
 
     // One card per treatment (not per length), each named by its own h2 so screen readers can list
-    // the cards by name, with a description paragraph and a "Helps with" list
+    // the cards by name, showing that treatment's own description and every "Helps with" item
     [Fact]
     public async Task Get_Services_RendersCardPerCatalogOffering()
     {
-        // Arrange
+        // Arrange (an empty catalog would make the loop below check nothing and pass)
         var offerings = Catalog.GetAll();
+        Assert.NotEmpty(offerings);
 
         // Act
         var cards = GetCards(await GetServicesAsync());
@@ -67,8 +72,11 @@ public class ServicesPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
             var labelledBy = Regex.Match(card, @"^<article\b[^>]*\baria-labelledby=""([^""]+)""").Groups[1].Value;
             Assert.NotEmpty(labelledBy);
             Assert.Matches($@"<h2\b[^>]*\bid=""{Regex.Escape(labelledBy)}""[^>]*>\s*{Regex.Escape(offering.Name)}\s*</h2>", card);
-            Assert.Matches(@"<p\b[^>]*>\s*\S[^<]*</p>", card);
-            Assert.Matches(@"<ul\b[^>]*>\s*<li\b", card);
+            Assert.Contains(offering.Description, Text(card));
+
+            var helpsWith = Regex.Matches(card, @"<li\b[^>]*>(.*?)</li>", RegexOptions.Singleline)
+                .Select(m => Text(m.Groups[1].Value));
+            Assert.Equal(offering.HelpsWith, helpsWith);
         }
     }
 
@@ -77,8 +85,9 @@ public class ServicesPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
     [Fact]
     public async Task Get_Services_CardPriceTableMatchesCatalog()
     {
-        // Arrange
+        // Arrange (an empty catalog would make the loop below check nothing and pass)
         var offerings = Catalog.GetAll();
+        Assert.NotEmpty(offerings);
 
         // Act
         var cards = GetCards(await GetServicesAsync());
@@ -139,14 +148,14 @@ public class ServicesPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
         Assert.Contains(PricingNote, Text(html));
     }
 
-    // The shared CallToAction band closes the page, after the last treatment card
+    // The shared CallToAction band comes after the last treatment card
     [Fact]
-    public async Task Get_Services_EndsWithCallToAction()
+    public async Task Get_Services_CallToActionFollowsCards()
     {
         // Arrange & Act
         var html = await GetServicesAsync();
         var lastCardEnd = html.LastIndexOf("</article>", StringComparison.Ordinal);
-        var cta = Regex.Match(html, @"<section\b[^>]*\bclass=""cta""[^>]*>.*?</section>", RegexOptions.Singleline);
+        var cta = Regex.Match(html, @"<section\b[^>]*\bclass=""[^""]*\bcta\b[^""]*""[^>]*>.*?</section>", RegexOptions.Singleline);
 
         // Assert
         Assert.True(lastCardEnd >= 0, "No treatment card found.");
