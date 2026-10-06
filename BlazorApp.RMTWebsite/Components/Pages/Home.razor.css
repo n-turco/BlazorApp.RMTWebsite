@@ -1,16 +1,84 @@
-/* Hero image frame. Fixed 600px tall for now; plan 2.2 replaces it with a responsive height
-   and a headline. overflow: hidden crops whatever part of the image doesn't fit. */
+/* Hero (plan 2.2): photo, dark overlay, then text, stacked with z-index.
+   min-height (not height) so the box grows if the text needs more room, e.g. a long headline
+   on a 320px phone or at 200% zoom, instead of clipping it. */
 .hero {
-    width: 100%;
-    height: 600px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 60vh;
     overflow: hidden;
+    /* Full-bleed: cancel <main>'s padding (px-3 = 1rem sides, .content = 1.1rem top in app.css)
+       so the photo runs edge to edge under the navbar. */
+    margin: -1.1rem -1rem 0;
+    background-color: var(--brand-dark); /* shown while the photo loads, keeps white text readable */
 }
 
-/* Fill the frame without stretching: object-fit: cover scales the image to cover the whole
-   box and crops the edges, like a CSS background-size: cover. */
+/* The photo fills the hero and is cropped, not stretched (object-fit: cover). */
 .hero-image {
-    display: block;
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 40%; /* keep the therapist's hands in frame on wide, short screens */
+}
+
+/* Dark layer between photo and text, so white text passes contrast over any part of the photo. */
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--hero-overlay);
+}
+
+/* Text sits above the overlay. max-width keeps lines short enough to read comfortably. */
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 44rem;
+    padding: 3rem 1rem;
+    color: var(--brand-light);
+}
+
+/* Larger than the normal h1 scale: this is the page's main message. */
+.hero-heading {
+    font-size: clamp(2rem, 1.3rem + 3vw, 3.25rem);
+    margin-bottom: 1rem;
+}
+
+.hero-subheading {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+/* Buttons stack full width on phones (easy to tap), and sit side by side from 576px. */
+.hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Keyboard focus ring visible on the dark hero (Bootstrap's default glow is too faint here). */
+.hero-actions a:focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 3px;
+    box-shadow: none;
+}
+
+@media (min-width: 576px) {
+    .hero-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+@media (min-width: 992px) {
+    .hero {
+        min-height: 70vh;
+        margin: -1.1rem -1.5rem 0; /* main uses px-lg-4 (1.5rem) from 992px */
+    }
+
+    .hero-content {
+        padding: 4rem 3rem;
+    }
 }

@@ -49,22 +49,12 @@
     --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-/* Book now: the brightest thing on the bar (black on cyan, 11.06:1). Full width at the bottom of
-   the open phone menu; a normal button beside the links on desktop. */
+/* Book now layout: full width at the bottom of the open phone menu, a normal button beside the
+   links on desktop. Its colours come from the shared .btn-accent class in app.css. */
 .book-button {
-    --bs-btn-color: var(--brand-dark);
-    --bs-btn-bg: var(--brand-accent);
-    --bs-btn-border-color: var(--brand-accent);
-    --bs-btn-hover-color: var(--brand-dark);
-    --bs-btn-hover-bg: var(--brand-light);
-    --bs-btn-hover-border-color: var(--brand-light);
-    --bs-btn-active-color: var(--brand-dark);
-    --bs-btn-active-bg: var(--brand-light);
-    --bs-btn-active-border-color: var(--brand-light);
     display: block;
     width: 100%;
     margin: 0.5rem 0 1rem;
-    font-weight: 600;
 }
 
 @media (min-width: 992px) {

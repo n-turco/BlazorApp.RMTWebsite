@@ -1,8 +1,26 @@
-﻿@page "/"
+@page "/"
 
 <PageTitle>Home</PageTitle>
-@* Read by screen readers but not shown; plan 2.2 replaces it with a visible hero headline. *@
-<h1 class="visually-hidden">Kinetic Flow Registered Massage Therapy</h1>
-<div class="hero">
-    <img src="/homepage_image.jpg" alt="Kinetic Flow Registered Massage Therapy" class="hero-image" />
-</div>
+
+@* Hero (plan 2.2): answers "what", "where", and "how to book" on the first screen.
+   aria-labelledby names the section after its headline for screen-reader landmark lists. *@
+<section class="hero" aria-labelledby="hero-heading">
+    @* Decorative photo (alt="": the headline carries the meaning). It's an <img>, not a CSS
+       background, so the browser finds it in the HTML straight away; fetchpriority="high" because
+       it's the largest thing on the first screen (Largest Contentful Paint). width/height reserve
+       its space before it loads.
+       Photo: Edward Muntinga on Unsplash (https://unsplash.com/photos/CjX9rtKsW8E), Unsplash License
+       (free commercial use, no attribution required). Resized to 1920px wide. *@
+    <img class="hero-image" src="@Assets["images/hero-massage.jpg"]" alt=""
+         width="1920" height="1282" fetchpriority="high" />
+
+    <div class="hero-content">
+        <h1 id="hero-heading" class="hero-heading">Therapeutic massage for recovery, pain relief, and performance</h1>
+        <p class="hero-subheading">Registered massage therapy in Guelph, Ontario</p>
+        <div class="hero-actions">
+            @* Both booking buttons point at the contact form until online booking exists (plan 4.1). *@
+            <a class="btn btn-lg btn-accent" href="contact">Book an appointment</a>
+            <a class="btn btn-lg btn-outline-light" href="services">View services</a>
+        </div>
+    </div>
+</section>
