@@ -15,6 +15,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Copy the site's stylesheet, fonts and HTML shell into the test output (under SiteFiles/)
+         so FontAssetTests can read them without fragile ../../.. paths. Link sets the output path. -->
+    <Content Include="..\BlazorApp.RMTWebsite\wwwroot\app.css" Link="SiteFiles\wwwroot\app.css" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <Content Include="..\BlazorApp.RMTWebsite\wwwroot\fonts\**" Link="SiteFiles\wwwroot\fonts\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <Content Include="..\BlazorApp.RMTWebsite\Components\App.razor" Link="SiteFiles\Components\App.razor" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Lets every test file use [Fact], [Theory] and Assert without a using line -->
     <Using Include="Xunit" />
   </ItemGroup>

@@ -13,10 +13,62 @@
     --bs-link-color-rgb: 0, 112, 153;
     --bs-link-hover-color: var(--brand-primary-hover);
     --bs-link-hover-color-rgb: 0, 82, 112;
+
+    /* Brand fonts (plan 2.1, ADR 0003). Each list ends in fallbacks that are close in shape,
+       so the page still looks intentional if a font file is slow or fails to load. */
+    --font-heading: 'Lora', Georgia, 'Times New Roman', serif;
+    --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+
+    /* Bootstrap reads these for body text and most components. */
+    --bs-font-sans-serif: var(--font-body);
+    --bs-body-font-family: var(--font-body);
+
+    /* Type scale: each heading is 1.25x the one below it (a "major third") on a 1rem base.
+       h1 and h2 use clamp(min, preferred, max) to shrink on phones and grow on desktop
+       without media queries. */
+    --fs-h1: clamp(2rem, 1.6rem + 1.6vw, 2.441rem);
+    --fs-h2: clamp(1.65rem, 1.4rem + 1vw, 1.953rem);
+    --fs-h3: 1.563rem;
+    --fs-h4: 1.25rem;
+    --fs-h5: 1.125rem;
+    --fs-h6: 1rem;
+    --lh-heading: 1.25;
 }
-html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+/* Self-hosted brand fonts (ADR 0003). Each is a variable font: one file covers the whole
+   weight range. font-display: swap shows fallback text right away instead of hiding it
+   while the font downloads. URLs are relative to this file, so they resolve to wwwroot/fonts/. */
+@font-face {
+    font-family: 'Lora';
+    src: url('fonts/lora-latin-wght-normal.woff2') format('woff2');
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
 }
+
+@font-face {
+    font-family: 'Inter';
+    src: url('fonts/inter-latin-wght-normal.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Bootstrap only has a Sass variable for the heading font, not a CSS one, so set it directly. */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+    font-family: var(--font-heading);
+    line-height: var(--lh-heading);
+}
+
+/* Heading sizes from the type scale. .display-* classes keep Bootstrap's own sizes. */
+h1, .h1 { font-size: var(--fs-h1); }
+h2, .h2 { font-size: var(--fs-h2); }
+h3, .h3 { font-size: var(--fs-h3); }
+h4, .h4 { font-size: var(--fs-h4); }
+h5, .h5 { font-size: var(--fs-h5); }
+h6, .h6 { font-size: var(--fs-h6); }
 
 a, .btn-link {
     color: var(--brand-primary);
