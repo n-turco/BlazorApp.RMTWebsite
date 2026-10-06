@@ -12,7 +12,6 @@ namespace BlazorApp.RMTWebsite
 
             // Add services to the container.
             builder.Services.AddRazorComponents();
-            //  builder.Services.AddRazorComponents().AddInteractiveServerComponents();
             builder.Services.AddHttpClient<IEmailSender, EmailSenderService>();
             // Treatments and prices, shared by the Home preview and the Services page (plan 2.2)
             builder.Services.AddSingleton<IServiceCatalog, ServiceCatalog>();

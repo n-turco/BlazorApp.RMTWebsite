@@ -9,11 +9,11 @@ namespace BlazorApp.RMTWebsite.Tests.Integration;
 /// Checks the redesigned Services page (plan task 2.5) in the real rendered HTML. The roadmap's
 /// "Done when": each treatment is described and bookable from the page. Expected names and prices
 /// come from the site's own IServiceCatalog, so these tests follow the catalog instead of copying it
-/// (ServiceCatalogTests is where the actual prices and copy are pinned).
+/// (ServiceCatalogTests is where the actual prices and copy are pinned). The heading and subtitle
+/// are checked with every other page in PageHeaderTests.
 /// </summary>
 public class ServicesPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
 {
-    private const string Subtitle = "Registered massage therapy in Guelph, Ontario";
     private const string PricingNote = "Prices are plus HST. Official receipts are provided for extended health insurance claims.";
 
     /// <summary>Fetches the Services page HTML through the in-memory site.</summary>
@@ -36,22 +36,6 @@ public class ServicesPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
     /// </summary>
     private static string Text(string markup) =>
         Regex.Replace(WebUtility.HtmlDecode(Regex.Replace(markup, "<[^>]+>", "")), @"\s+", " ").Trim();
-
-    // PageHeader renders the page's only <h1> and the subtitle together in one header block
-    [Fact]
-    public async Task Get_Services_HasPageHeaderH1AndSubtitle()
-    {
-        // Arrange & Act
-        var html = await GetServicesAsync();
-        var header = Regex.Match(html, @"<header\b[^>]*\bclass=""[^""]*\bpage-header\b[^""]*""[^>]*>.*?</header>", RegexOptions.Singleline).Value;
-        var h1Tags = Regex.Matches(html, @"<h1\b[^>]*>(.*?)</h1>", RegexOptions.Singleline);
-
-        // Assert
-        var h1 = Assert.Single(h1Tags);
-        Assert.Equal("Services and rates", Text(h1.Groups[1].Value));
-        Assert.Contains(h1.Value, header);
-        Assert.Contains(Subtitle, header);
-    }
 
     // One card per treatment (not per length), each named by its own h2 so screen readers can list
     // the cards by name, showing that treatment's own description and every "Helps with" item

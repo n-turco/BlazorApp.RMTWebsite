@@ -1,4 +1,4 @@
-@page "/contact"
+﻿@page "/contact"
 @using Models
 @inject IEmailSender emailSender
 @inject ILogger<ContactUs> Logger
@@ -13,7 +13,6 @@
 
 @* A plain .container (no w-75) so the form's left edge lines up with the heading (plan 2.8). *@
 <div class="container">
-    <!--NEED TO UPDATE TO A FORM TO COLLECT USER INFO-->
     <EditForm Model="Inquiry" OnValidSubmit="ValidSubmit" FormName="inquiryForm" Enhance>
         <DataAnnotationsValidator />
 
