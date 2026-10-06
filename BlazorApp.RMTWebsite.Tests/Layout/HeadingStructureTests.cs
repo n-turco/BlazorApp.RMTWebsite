@@ -8,7 +8,8 @@ namespace BlazorApp.RMTWebsite.Tests.Layout;
 /// routable page has exactly one &lt;h1&gt; naming that page. Screen-reader users jump between
 /// headings, and search engines use the &lt;h1&gt;, so a site-wide &lt;h1&gt; makes every page look the same.
 /// These tests read the .razor source files, which the test project copies into SiteFiles/
-/// (see the .csproj). Rendered-HTML checks replace them once 6.2 PR 2 adds WebApplicationFactory.
+/// (see the .csproj). WebApplicationFactory is available now (6.2, #18), so replacing these with
+/// rendered-HTML checks is a planned follow-up (see docs/plans/2.5-services-page.md).
 /// </summary>
 public class HeadingStructureTests
 {
