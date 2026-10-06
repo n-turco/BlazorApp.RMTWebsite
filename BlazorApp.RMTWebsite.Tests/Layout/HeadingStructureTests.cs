@@ -12,8 +12,13 @@ namespace BlazorApp.RMTWebsite.Tests.Layout;
 /// </summary>
 public class HeadingStructureTests
 {
-    /// <summary>Counts opening &lt;h1&gt; tags, with or without attributes. Doesn't match &lt;h10&gt; or &lt;hr&gt;.</summary>
-    private static int CountH1Tags(string markup) => Regex.Matches(markup, @"<h1[\s>]", RegexOptions.IgnoreCase).Count;
+    /// <summary>
+    /// Counts opening &lt;h1&gt; tags, with or without attributes, plus &lt;PageHeader&gt; components,
+    /// which always render exactly one &lt;h1&gt; (plan 2.8). Doesn't match &lt;h10&gt;, &lt;hr&gt;, or
+    /// a longer component name such as &lt;PageHeaderBanner&gt;.
+    /// </summary>
+    private static int CountH1Tags(string markup) =>
+        Regex.Matches(markup, @"<h1[\s>]|<PageHeader[\s/>]", RegexOptions.IgnoreCase).Count;
 
     /// <summary>
     /// Every page with an @page directive, as a file name such as "FAQ.razor". Each one becomes a

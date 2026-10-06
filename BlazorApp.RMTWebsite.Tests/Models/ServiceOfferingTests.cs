@@ -10,7 +10,8 @@ namespace BlazorApp.RMTWebsite.Tests.Models;
 public class ServiceOfferingTests
 {
     // Options deliberately out of order, so "first" and "lowest" give different answers
-    private static ServiceOffering CreateOffering() => new("Test Massage",
+    // (description and "helps with" don't affect these calculations, so they're placeholders)
+    private static ServiceOffering CreateOffering() => new("Test Massage", "Test description.", ["Test benefit"],
     [
         new ServiceOption(60, 130m),
         new ServiceOption(30, 90m),

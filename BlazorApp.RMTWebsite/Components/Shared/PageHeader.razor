@@ -1,0 +1,22 @@
+@* Shared page heading (plan 2.8, step 1; first used on Services in 2.5): the page's single <h1>,
+   an optional subtitle, and a divider below, so every page starts the same way without <hr>/<br>
+   spacing hacks. Usage:
+       <PageHeader Title="Services and rates" Subtitle="Registered massage therapy in Guelph, Ontario" />
+   It does not set <PageTitle>; each page still sets its own browser-tab title. *@
+<header class="page-header">
+    <h1 class="page-header-title">@Title</h1>
+    @if (!string.IsNullOrWhiteSpace(Subtitle))
+    {
+        <p class="page-header-subtitle">@Subtitle</p>
+    }
+</header>
+
+@code {
+    /// <summary>The page heading, rendered as the page's only &lt;h1&gt;. Required.</summary>
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    /// <summary>Optional one-line summary shown under the heading.</summary>
+    [Parameter]
+    public string? Subtitle { get; set; }
+}

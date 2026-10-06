@@ -1,0 +1,20 @@
+/* Space above and below plus a light divider: this replaces the <hr/><br/> that pages used for gaps.
+   The divider is decorative (the heading already marks the start of the page), so it doesn't need
+   the 3:1 non-text contrast that a meaningful border would. */
+.page-header {
+    padding-top: 1.5rem;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--brand-border);
+}
+
+.page-header-title {
+    margin-bottom: 0;
+}
+
+/* Slightly larger than body text, in Bootstrap's body color (#212529 on white, 15.4:1). */
+.page-header-subtitle {
+    font-size: 1.125rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
