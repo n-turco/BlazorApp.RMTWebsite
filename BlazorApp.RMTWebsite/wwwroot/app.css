@@ -7,6 +7,10 @@
     --brand-light: #ffffff;
     --brand-border: #d6d5d5;
 
+    /* Dark layer over the Home hero photo (plan 2.2). At 0.6, even a pure-white pixel in the photo
+       becomes #666, and white text on that is 5.74:1 (WCAG AA needs 4.5:1). */
+    --hero-overlay: rgb(0 0 0 / 0.6);
+
     --bs-primary: var(--brand-primary);
     --bs-primary-rgb: 0, 112, 153;
     --bs-link-color: var(--brand-primary);
@@ -72,6 +76,21 @@ h6, .h6 { font-size: var(--fs-h6); }
 
 a, .btn-link {
     color: var(--brand-primary);
+}
+
+/* Accent call-to-action button: black on cyan (11.06:1), white on hover/press (21:1). Used for
+   every "Book" button (navbar, Home hero) so they always match. Meant for dark backgrounds. */
+.btn-accent {
+    --bs-btn-color: var(--brand-dark);
+    --bs-btn-bg: var(--brand-accent);
+    --bs-btn-border-color: var(--brand-accent);
+    --bs-btn-hover-color: var(--brand-dark);
+    --bs-btn-hover-bg: var(--brand-light);
+    --bs-btn-hover-border-color: var(--brand-light);
+    --bs-btn-active-color: var(--brand-dark);
+    --bs-btn-active-bg: var(--brand-light);
+    --bs-btn-active-border-color: var(--brand-light);
+    font-weight: 600;
 }
 
 .btn-primary {
