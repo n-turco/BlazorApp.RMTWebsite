@@ -2,47 +2,125 @@
 
 <PageTitle>FAQ</PageTitle>
 
-@* Shared heading (plan 2.8). The answers keep their <br>/<hr> until the accordion rebuild in 2.7;
-   .container lines them up with the heading. *@
 <PageHeader Title="Frequently asked questions" />
 
-<div class="container table-info">
-    <p>
-        <h5>What is Massage Therapy?</h5>
+@* FAQ (plan 2.7): questions in groups, each a native <details>/<summary>. The browser handles opening and
+   closing with no JavaScript, Tab and Enter/Space work out of the box, screen readers announce
+   "collapsed/expanded", and in Chrome/Edge Ctrl+F opens the answer it finds. All questions start closed so the page
+   scans as a list. The content lives in the Groups data below; to add a question, add a line there. *@
+<div class="container faq">
+    @foreach (var (group, index) in Groups.Select((group, index) => (group, index)))
+    {
+        // Ids from the position, so each section's aria-labelledby points at a unique h2
+        var headingId = $"faq-group-{index}";
 
-        Massage therapy is a clinically-oriented healthcare option that involves the hands-on manipulation of the body's soft tissues, 
-        <br />
-        including muscles, connective tissue, tendons, ligaments, and joints. It is an evidence-based practice used to develop, maintain, 
-        <br />
-        or rehabilitate physical function, as well as to relieve pain and manage stress.
-    </p>
-    <hr />
-    <p>
-        <h5>This is my first massage, what should I expect?</h5>
-    
-        You should expect your RMT to have a brief conversation with you pertaining to your health and wellness prior to your massage. 
-        <br />
-        They may conduct a few brief assessments to determine the location and type of injury or condition you may be experiencing.
-        <br />
-        During your treatment, you will have the areas that you specified worked on, and your RMT will ensure throughout your treatment that you
-        <br />
-        are comfortable and that the pressure is adequate for your needs and comfort level. After your session, it is typical that your RMT will 
-        <br />
-        discuss their findings, and advise on specific stretches or exercises that may help you.
-    </p>
-    <hr />
-    <p>
-        <h5>How will massage therapy benefit me?</h5>
-       
-        With professional registered massage therapy, you can experience relief from muscular tension and pain, receive increased range of 
-        <br />
-        motion and a reduction of mental stress levels. Massage is a natural healing process that can deliver both physical and emotional benefits.
-        <br />
-        Treatments are specifically tailored to meet your needs. Your RMT will take the time to read over your health history and discuss your concerns 
-        <br />
-        before commencing your treatment.
-    </p>
+        @* Each group is a named region (aria-labelledby), so screen-reader users can jump between them. *@
+        <section class="faq-group" aria-labelledby="@headingId">
+            <h2 id="@headingId" class="faq-group-heading">@group.Heading</h2>
+
+            @foreach (var item in group.Items)
+            {
+                @* The question is plain text inside <summary>, not a heading: a heading there makes some
+                   screen readers stop announcing it as a button. *@
+                <details class="faq-item">
+                    <summary>@item.Question</summary>
+                    <div class="faq-answer">
+                        @* Paragraphs, never <br>: text reflows to any screen width. *@
+                        @foreach (var paragraph in item.Answer)
+                        {
+                            <p>@paragraph</p>
+                        }
+                    </div>
+                </details>
+            }
+        </section>
+    }
 </div>
 
+@* The roadmap's closing step: "Still have questions? Contact us" (shared component from 2.2). *@
+<div class="full-bleed">
+    <CallToAction Heading="Still have questions?"
+                  Text="Send a message and Nick will get back to you."
+                  ButtonText="Contact Nick" />
+</div>
 
+@code {
+    /// <summary>A heading and the questions under it.</summary>
+    private sealed record FaqGroup(string Heading, IReadOnlyList<FaqItem> Items);
 
+    /// <summary>One question and its answer, as a list of paragraphs.</summary>
+    private sealed record FaqItem(string Question, IReadOnlyList<string> Answer);
+
+    // Agreed 2026-10-06 (docs/plans/2.7-faq-accordion.md, Decisions). FaqPageTests pins the question list
+    // and every answer word for word: some are promises to clients (billing, payment, cancellations) and
+    // all are health-advertising copy, so any wording change should be deliberate.
+    // Parking and accessibility is added with the location details in plan 3.2. In 4.3 this moves to configuration.
+    private static readonly IReadOnlyList<FaqGroup> Groups =
+    [
+        new("About massage therapy",
+        [
+            new("What is massage therapy?",
+            [
+                "Massage therapy is a clinically oriented healthcare option that involves the hands-on manipulation of " +
+                "the body's soft tissues, including muscles, connective tissue, tendons, ligaments, and joints.",
+                "It's an evidence-based practice used to develop, maintain, or rehabilitate physical function, and to " +
+                "relieve pain and manage stress.",
+            ]),
+            new("How will massage therapy benefit me?",
+            [
+                "Registered massage therapy can relieve muscle tension and pain, increase your range of motion, and " +
+                "lower your stress levels.",
+                "Treatments are tailored to your needs. Your RMT will read over your health history and discuss your " +
+                "concerns before your treatment begins.",
+            ]),
+            new("How often should I book?",
+            [
+                "It depends on your goals. For a specific injury or ongoing pain, sessions are often closer together at " +
+                "first, then spaced out as you improve. For general maintenance and stress relief, many people come every " +
+                "3–6 weeks. Nick will suggest a plan after your first visit.",
+            ]),
+        ]),
+        new("Your first visit",
+        [
+            new("This is my first massage. What should I expect?",
+            [
+                // "Assessments of the area of concern", not "find the type of injury": communicating a
+                // diagnosis is a controlled act RMTs aren't authorized to perform in Ontario (review, 2026-10-06)
+                "Your RMT will start with a brief conversation about your health and wellness, and may do a few short " +
+                "assessments of the area of concern to plan your treatment.",
+                "During your treatment, the areas you've asked about are worked on, and your RMT will check throughout " +
+                "that you're comfortable and that the pressure suits you.",
+                "Afterwards, your RMT will usually discuss their findings and suggest stretches or exercises that may help.",
+            ]),
+            new("What should I wear?",
+            [
+                "Wear whatever is comfortable. For most treatments you'll undress to your comfort level and be covered by " +
+                "a sheet the whole time, with only the area being treated uncovered. You can also stay fully or partly " +
+                "clothed, and Nick can adapt the treatment. Your comfort and consent come first, and you can ask to stop " +
+                "or change anything at any time.",
+            ]),
+            new("Do I need a doctor's referral?",
+            [
+                "No. You can book directly with a registered massage therapist in Ontario. Some insurance plans require a " +
+                "referral before they'll reimburse you, so check your plan's details.",
+            ]),
+        ]),
+        new("Billing and policies",
+        [
+            new("Do you bill my insurance directly?",
+            [
+                "Not at this time. You pay at your appointment and receive an official receipt to submit to your " +
+                "extended health insurance for reimbursement.",
+            ]),
+            new("What payment methods do you accept?",
+            [
+                "Debit, credit card, and Interac e-Transfer. Prices are plus HST.",
+            ]),
+            new("What is your cancellation policy?",
+            [
+                "Please give at least 24 hours' notice if you need to cancel or reschedule. Late cancellations and missed " +
+                "appointments may be charged the full appointment fee.",
+            ]),
+        ]),
+    ];
+}
