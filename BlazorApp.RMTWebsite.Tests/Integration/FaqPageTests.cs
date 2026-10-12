@@ -168,22 +168,24 @@ public class FaqPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
     }
 
     // Every answer, word for word: approved copy or built only from confirmed facts (plan 2.7, Decisions,
-    // 2026-10-06). Multi-paragraph answers are compared with their paragraphs joined by a space
+    // 2026-10-06). Each argument after the question is one paragraph, so moving a sentence between paragraphs fails too
     [Theory]
     [InlineData("What is massage therapy?",
         "Massage therapy is a clinically oriented healthcare option that involves the hands-on manipulation of the " +
-        "body's soft tissues, including muscles, connective tissue, tendons, ligaments, and joints. It's an " +
-        "evidence-based practice used to develop, maintain, or rehabilitate physical function, and to relieve pain " +
-        "and manage stress.")]
+        "body's soft tissues, including muscles, connective tissue, tendons, ligaments, and joints.",
+        "It's an evidence-based practice used to develop, maintain, or rehabilitate physical function, and to relieve " +
+        "pain and manage stress.")]
     [InlineData("How will massage therapy benefit me?",
         "Registered massage therapy can relieve muscle tension and pain, increase your range of motion, and lower " +
-        "your stress levels. Treatments are tailored to your needs. Your RMT will read over your health history and " +
-        "discuss your concerns before your treatment begins.")]
+        "your stress levels.",
+        "Treatments are tailored to your needs. Your RMT will read over your health history and discuss your " +
+        "concerns before your treatment begins.")]
     [InlineData("This is my first massage. What should I expect?",
         "Your RMT will start with a brief conversation about your health and wellness, and may do a few short " +
-        "assessments of the area of concern to plan your treatment. During your treatment, the areas you've asked " +
-        "about are worked on, and your RMT will check throughout that you're comfortable and that the pressure suits " +
-        "you. Afterwards, your RMT will usually discuss their findings and suggest stretches or exercises that may help.")]
+        "assessments of the area of concern to plan your treatment.",
+        "During your treatment, the areas you've asked about are worked on, and your RMT will check throughout that " +
+        "you're comfortable and that the pressure suits you.",
+        "Afterwards, your RMT will usually discuss their findings and suggest stretches or exercises that may help.")]
     [InlineData("What should I wear?",
         "Wear whatever is comfortable. For most treatments you'll undress to your comfort level and be covered by a sheet " +
         "the whole time, with only the area being treated uncovered. You can also stay fully or partly clothed, and Nick " +
@@ -203,14 +205,14 @@ public class FaqPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
     [InlineData("What is your cancellation policy?",
         "Please give at least 24 hours' notice if you need to cancel or reschedule. Late cancellations and missed " +
         "appointments may be charged the full appointment fee.")]
-    public async Task Get_Faq_AnswerMatchesApprovedCopy(string question, string expectedAnswer)
+    public async Task Get_Faq_AnswerMatchesApprovedCopy(string question, params string[] expectedParagraphs)
     {
         // Arrange & Act
         var match = GetQuestions(await GetFaqAsync()).SingleOrDefault(q => q.Text == question);
 
         // Assert
         Assert.NotNull(match);
-        Assert.Equal(expectedAnswer, string.Join(" ", GetParagraphs(match.AnswerMarkup)));
+        Assert.Equal(expectedParagraphs, GetParagraphs(match.AnswerMarkup));
     }
 
     // Answers are paragraphs that reflow at any width. A <br> chops sentences mid-line on phones
