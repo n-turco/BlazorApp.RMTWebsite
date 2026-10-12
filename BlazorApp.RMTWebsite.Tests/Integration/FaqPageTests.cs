@@ -46,8 +46,12 @@ public class FaqPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
         if (header < 0)
             Assert.Fail("No PageHeader (\"page-header\") found on the page.");
 
+        var cta = Regex.Match(html, CtaSectionTag);
+        if (!cta.Success)
+            Assert.Fail("No CallToAction section (class \"cta\") found on the page.");
+
         var start = html.IndexOf("</header>", header, StringComparison.Ordinal);
-        var end = Regex.Match(html, CtaSectionTag).Index;
+        var end = cta.Index;
         return start >= 0 && end > start ? html[start..end] : "";
     }
 
@@ -64,6 +68,21 @@ public class FaqPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
 
         // Assert
         Assert.Contains("page-header", exception.Message);
+    }
+
+    // A page without the closing CallToAction must fail with a message that says so. An unmatched
+    // Regex.Match has Index 0, so the helper used to return "" and the group tests failed on a confusing empty diff
+    [Fact]
+    public void GetFaqBody_WithoutCallToAction_FailsWithClearMessage()
+    {
+        // Arrange
+        const string html = "<header class=\"page-header\"><h1>FAQ</h1></header><section></section>";
+
+        // Act
+        var exception = Assert.Throws<FailException>(() => GetFaqBody(html));
+
+        // Assert
+        Assert.Contains("CallToAction", exception.Message);
     }
 
     // The roadmap asks for at least eight; each one has a question and at least one answer paragraph,
