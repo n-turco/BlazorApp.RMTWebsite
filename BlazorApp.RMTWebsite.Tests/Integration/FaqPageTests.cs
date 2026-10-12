@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.RegularExpressions;
+using Xunit.Sdk;
 
 namespace BlazorApp.RMTWebsite.Tests.Integration;
 
@@ -41,9 +42,28 @@ public class FaqPageTests(SiteFactory factory) : IClassFixture<SiteFactory>
     /// <summary>The page's content between the PageHeader and the closing call to action.</summary>
     private static string GetFaqBody(string html)
     {
-        var start = html.IndexOf("</header>", html.IndexOf("page-header", StringComparison.Ordinal), StringComparison.Ordinal);
+        var header = html.IndexOf("page-header", StringComparison.Ordinal);
+        if (header < 0)
+            Assert.Fail("No PageHeader (\"page-header\") found on the page.");
+
+        var start = html.IndexOf("</header>", header, StringComparison.Ordinal);
         var end = Regex.Match(html, CtaSectionTag).Index;
         return start >= 0 && end > start ? html[start..end] : "";
+    }
+
+    // A page without the PageHeader must fail with a message that says so, not an
+    // ArgumentOutOfRangeException from searching at index -1
+    [Fact]
+    public void GetFaqBody_WithoutPageHeader_FailsWithClearMessage()
+    {
+        // Arrange
+        const string html = "<main><section class=\"cta\"></section></main>";
+
+        // Act
+        var exception = Assert.Throws<FailException>(() => GetFaqBody(html));
+
+        // Assert
+        Assert.Contains("page-header", exception.Message);
     }
 
     // The roadmap asks for at least eight; each one has a question and at least one answer paragraph,
